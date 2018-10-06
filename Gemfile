@@ -17,4 +17,7 @@ group :development do
   gem "pry"
   gem "sqlite3"
   gem "shotgun"
+  gem "sinatra-reloader", '0.5.0'  
+  gem "rerun"
+  gem "sinatra-contrib"
 end
