@@ -7,7 +7,7 @@ class ApplicationController < Sinatra::Base
       end
 
   get '/' do 
-    "Application Controller!"
+    "Application Controller At least this still works Test?!"
   end
 
 end
