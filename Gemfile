@@ -1,10 +1,11 @@
 source "https://rubygems.org"
 
-gem 'sinatra', '~> 1.4', '>= 1.4.7'
+#gem 'sinatra', '~> 1.4', '>= 1.4.7'
 #gem 'sinatra', '1.3.6'
+gem 'sinatra', '1.3.6'
 gem 'activerecord', '4.2.5', :require => 'active_record'
 gem 'sinatra-activerecord', :require => 'sinatra/activerecord'
-gem 'sinatra-contrib'
+gem 'sinatra-contrib', '1.3.1'
 gem 'rake'
 gem 'pry'
 gem 'require_all'
