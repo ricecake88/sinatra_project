@@ -6,6 +6,6 @@ class ExpenseController < ApplicationController
     end
 
     get '/expense' do
-        erb :'expense'
+        erb :'expense/index'
     end
 end
