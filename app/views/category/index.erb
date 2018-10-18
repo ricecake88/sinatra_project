@@ -1,10 +1,18 @@
 <html>
-<head><title>Manage Categories</title></head>
+<head><title>All Categories</title></head>
+<body>
+Existing Categories
+<% Category.all.each do |cat|%>
+    <%= cat.category_name %><br/>
+<% end %>
+
+Add a Category
 <form method="post" action="/categories">
 <p>
 <label for="category_name">Category Name</label><br/>
 <input type="text" name="category_name"><br/>
 </p>
-<input type="submit" value="Submit"><br/>
+<input type="submit" value="Submit Category">
 </form>
+</body>
 </html>
