@@ -1,0 +1,8 @@
+Select all to delete:<br>
+<form method="post" action="/categories/delete">
+<% @categories.each do |cat| %>
+<input type="checkbox" id="<%= cat.id %>" value="<%= cat.id %>" name="category[][id]"><%= cat.category_name %><br/>
+<% end %>
+<input id="hidden" type="hidden" name="_method" value="delete">
+<input type="submit" value="delete">
+</form>

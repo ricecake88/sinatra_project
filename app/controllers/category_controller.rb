@@ -37,6 +37,23 @@ class CategoryController < ApplicationController
         redirect to '/categories'
     end
 
+    get '/categories/show' do
+      @categories = Category.all
+      erb :'/category/show'
+    end
+
+    delete '/categories/delete' do
+      @categories = params[:category]
+      binding.pry
+      @categories.each do |cat|
+        category = Category.find(cat["id"])
+        if !category.nil?
+          category.delete
+        end
+      end
+      redirect to '/categories'
+    end
+
     helpers do
 
       def exists_already?(name)
