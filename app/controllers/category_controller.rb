@@ -6,7 +6,22 @@ class CategoryController < ApplicationController
     end
 
     get '/categories' do
-        erb :'category/index'
+      @categories = Category.all
+      erb :'category/index'
+    end
+
+    post '/categories/edit' do
+      @categories = params[:category]
+      @categories.each do |cat|
+        category = Category.find(cat["id"])
+        if !category.nil?
+          if cat["name"] != category.category_name
+            category.update(:category_name => cat["name"])
+            category.save
+          end
+        end
+      end
+      redirect to '/categories'
     end
 
     post '/categories/add' do

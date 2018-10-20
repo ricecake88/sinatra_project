@@ -2,9 +2,13 @@
 <head><title>All Categories</title></head>
 <body>
 Existing Categories
-<% Category.all.each do |cat|%>
-    <%= cat.category_name %><br/>
+<form method="post" action="/categories/edit">
+<% @categories.each do |cat|%>
+    <input type="hidden" name="category[][id]" value="<%= cat.id %>">
+    <input type="text" name="category[][name]" value="<%= cat.category_name %>"><br/>
 <% end %>
+    <input type="submit" value="Modify Categories">
+</form>
 
 Add a Category
 <form method="post" action="/categories/add">
