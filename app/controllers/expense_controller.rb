@@ -1,11 +1,15 @@
-require 'sinatra/reloader'
-
 class ExpenseController < ApplicationController
-    configure :development do
-        register Sinatra::Reloader
-    end
 
     get '/expense' do
-        erb :'expense/index'
+      @expenses = Expense.all
+      erb :'expense/index'
+    end
+
+    get '/expense/add' do
+      erb :'expense/add'
+    end
+
+    post '/expense/add' do
+      binding.pry
     end
 end

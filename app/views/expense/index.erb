@@ -1,16 +1,10 @@
 <html>
 
-<form method="post" action="">
-<label for="expense_date">Expense Date:</label>
-<input type="text" name="expense_date"><br/>
+All Expenses:
+<% @expenses.each do |expense| %>
+  <%= expense.date.strftime("%m/%d/%Y") %><br/>
+  <%= expense.amount %><br/>
+<% end %>
 
-<label for="expense_amount">Amount:</label>
-<input type="text" name="expense_amount"><br/>
-
-<label for="expense_description">Description:</label>
-<input type="text" name="expense_description"><br/>
-
-<input type="submit" value="Enter Expense">
-</form>
-
+<a href="/expense/add">Add a new expense</a>
 </html>
