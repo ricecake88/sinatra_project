@@ -12,6 +12,7 @@
 
 <label for="expense_category_id">Category</label>
 <select name="expense_category">
+  <% binding.pry %>
 <% Category.all.each do |cat| %>
   <option value="<%= cat.id %>"><%= cat.category_name %></option>
 <% end %>
