@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<form method="post" action="/expense/add">
+<label for="expense_date">Expense Date:</label>
+<input type="date" name="expense_date"><br/>
+
+<label for="expense_amount">Amount:</label>
+<input type="number" step="any" name="expense_amount"><br/>
+
+<label for="expense_description">Description:</label>
+<input type="text" name="expense_description"><br/>
+
+<label for="expense_category_id">Category</label>
+<select name="expense_category">
+<% Category.all.each do |cat| %>
+  <option value="<%= cat.id %>"><%= cat.category_name %></option>
+<% end %>
+</select>
+<input type="submit" value="Enter Expense">
+</form>
+</html>
