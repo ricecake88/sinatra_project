@@ -1,9 +1,4 @@
-require 'sinatra/reloader'
-
 class CategoryController < ApplicationController
-    configure :development do
-        register Sinatra::Reloader
-    end
 
     get '/categories' do
       @categories = Category.all
