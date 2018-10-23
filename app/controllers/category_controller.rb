@@ -30,8 +30,9 @@ class CategoryController < ApplicationController
         cat = Category.create(:category_name => name)
         Category.all << cat
         cat.save
+        flash[:message] = "Added category!"
       else
-        "Error, category already exists"
+        flash[:message] = "Error, category already exists"
       end
         redirect to '/categories'
     end
