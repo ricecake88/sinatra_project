@@ -2,7 +2,12 @@
 <head><title>All Categories</title></head>
 <body>
 Existing Categories
+<% if flash.has?(:message) %>
+  <%= flash[:message] %>
+<% end %>
+
 <form method="post" action="/categories/edit">
+  <input id="hidden" type="hidden" name="_method" value="patch">
 <% @categories.each do |cat|%>
     <input type="hidden" name="category[][id]" value="<%= cat.id %>">
     <input type="text" name="category[][name]" value="<%= cat.category_name %>"><br/>
