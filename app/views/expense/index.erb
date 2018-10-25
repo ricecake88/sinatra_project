@@ -1,9 +1,17 @@
 <html>
 
+<p>
 All Expenses:
+</p>
+
 <% @expenses.each do |expense| %>
-  <%= expense.date.strftime("%m/%d/%Y") %><br/>
-  <%= expense.amount %><br/>
+<p>
+  <%= expense.date %> |
+  <%= expense.amount %> |
+  <%= expense.vendor %> |
+  <%= expense.description %> |
+  <%= Category.find(expense.category_id).category_name %>
+</p>
 <% end %>
 
 <a href="/expense/add">Add a new expense</a>

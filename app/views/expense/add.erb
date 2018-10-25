@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
+
+<p>
+Enter an Expense
+
+<p>
+  <div id="error">
+<% if flash.has?(:message) %>
+  <%= flash[:message] %>
+<% end %>
+  </div>
+</p>
+
 <form method="post" action="/expense/add">
 <label for="expense[date]">Expense Date:</label>
 <input type="date" name="expense[date]"><br/>
