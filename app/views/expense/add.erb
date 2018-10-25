@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <form method="post" action="/expense/add">
-<label for="expense_date">Expense Date:</label>
-<input type="date" name="expense_date"><br/>
+<label for="expense[date]">Expense Date:</label>
+<input type="date" name="expense[date]"><br/>
 
-<label for="expense_amount">Amount:</label>
-<input type="number" step="any" name="expense_amount"><br/>
+<label for="expense[amount]">Amount:</label>
+<input type="number" step="any" name="expense[amount]"><br/>
 
-<label for="expense_description">Description:</label>
-<input type="text" name="expense_description"><br/>
+<label for="expense[description]">Description:</label>
+<input type="text" name="expense[description]"><br/>
 
-<label for="expense_category_id">Category</label>
-<select name="expense_category">
-  <% binding.pry %>
+<label for="expense[category_id]">Category</label>
+<% Category.create_category_if_empty %>
+<select name="expense[category_id]">
 <% Category.all.each do |cat| %>
   <option value="<%= cat.id %>"><%= cat.category_name %></option>
 <% end %>
-</select>
+</select><br/>
+
+<label for="expense[vendor]">Vendor</label>
+<input type="text" name="expense[vendor]">
+
+<p>
 <input type="submit" value="Enter Expense">
+</p>
+
 </form>
 </html>
