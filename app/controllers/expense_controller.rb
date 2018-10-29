@@ -22,7 +22,7 @@ class ExpenseController < ApplicationController
     if (!params[:expense]["date"].empty? &&
         !params[:expense]["amount"].empty? &&
         !params[:expense]["description"].empty? &&
-        !params[:expense]["vendor"].empty?)
+        !params[:expense]["merchant"].empty?)
         @matched_expense = entry_already_exists?(params[:expense])
         if !@matched_expense
           @expense = Expense.create(params[:expense])
@@ -43,7 +43,7 @@ class ExpenseController < ApplicationController
   helpers do
     def entry_already_exists?(expense)
       @matched_expense_by_date = Expense.find_by(:date => expense['date'])
-      if (@matched_expense_by_date["vendor"] == expense["vendor"] &&
+      if (@matched_expense_by_date["merchant"] == expense["merchant"] &&
           @matched_expense_by_date["amount"].to_f == expense["amount"].to_f)
           return true
       else

@@ -5,7 +5,7 @@ class CreateExpenses < ActiveRecord::Migration
       t.decimal :amount, :precision => 8, :scale => 2
       t.string :description
       t.integer :category_id
-      t.string :vendor
+      t.string :merchant
     end
   end
 end
