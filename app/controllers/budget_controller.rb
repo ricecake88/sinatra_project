@@ -15,7 +15,6 @@ class BudgetController < ApplicationController
 
   get '/budgets/:id' do
     @budget = Budget.find(params[:id])
-    binding.pry
     erb :'/budget/show'
   end
 
@@ -29,7 +28,8 @@ class BudgetController < ApplicationController
       @budget.save
       redirect to "/budgets/#{@budget.id}"
     else
-      "No"
+      flash[:message] = "Sorry, either the amount or category entered is empty"
+      redirect to "/budgets/add"
     end
   end
 
