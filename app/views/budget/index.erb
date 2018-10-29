@@ -1,0 +1,8 @@
+<p>Current Budget Limits:</p>
+
+<% if @budgets.empty? || @budgets.nil? %>
+  <p>Budgets not entered</p>
+<% end %>
+<% @budgets.each do |b| %>
+  <%= b.category %>
+<% end %>
