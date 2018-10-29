@@ -1,8 +1,15 @@
 <p>Current Budget Limits:</p>
 
 <% if @budgets.empty? || @budgets.nil? %>
-  <p>Budgets not entered</p>
+  <p>
+  Budgets not entered<br/>
+  <a href="/budgets/add">Add a budget?</a>
+ </p>
 <% end %>
+
 <% @budgets.each do |b| %>
-  <%= b.category %>
+<p>
+  Category Name: <%= Category.find(b.category_id).category_name %>
+  Category Budget Amount: <%= b.amount %>
+</p>
 <% end %>
