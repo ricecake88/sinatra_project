@@ -1,31 +1,74 @@
 require_relative '../../config/environment'
+require 'rack-flash'
 
 class ApplicationController < Sinatra::Base
+  use Rack::Flash
+  enable :sessions
+
   register Sinatra::ActiveRecordExtension
   set :session_secret, "my_application_secret"
   set :views, Proc.new { File.join(root, "../views/") }
-  enable :sessions
 
   get '/' do
     erb :'index'
   end
 
-  post '/login' do
-    @user = User.find_by(username: params[:username], password: params[:password])
-    if @user
-      session[:user_id] = @user.id
-      redirect '/account'
+  get '/signup' do
+    erb :'signup'
+  end
+
+  post '/signup' do
+    if params[:username].empty? || params[:password].empty?
+      flash[:message] = "Sorry, username or password field missing."
+      redirect '/signup'
+    elsif username_exists?(params[:username])
+      flash[:message] = "Username already exists."
+      redirect '/signup'
     else
-      erb :error
+      @user = User.create(username: params[:username], password: params[:password])
+      if @user.save
+        redirect '/'
+      end
+    end
+  end
+
+  post '/login' do
+    if params[:username].empty? || params[:password].empty?
+      flash[:message] = "Sorry, username or password field missing."
+    else
+      @user = User.find_by(username: params[:username], password: params[:password])
+      if @user
+        session[:user_id] = @user.id
+        redirect '/account'
+      else
+        flash[:message] = "Sorry, username/password combination does not exist."
+        redirect '/login'
+      end
     end
   end
 
   get '/account' do
     @sessionName = session
+    if Helpers.is_logged_in?(session)
+      erb :account
+    else
+      flash[:message] = "Sorry you are not logged in."
+      redirect '/login'
+    end
   end
 
   get '/logout' do
     session.clear
-    redirect to '/'
+    redirect '/'
+  end
+
+  helpers do
+    def username_exists?(username)
+      if (User.find_by(:username => username)).nil?
+        false
+      else
+        true
+      end
+    end
   end
 end
