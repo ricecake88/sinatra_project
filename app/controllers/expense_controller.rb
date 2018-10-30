@@ -45,7 +45,7 @@ class ExpenseController < ApplicationController
       @matched_expense_by_date = Expense.find_by(:date => expense['date'])
       if (@matched_expense_by_date["merchant"] == expense["merchant"] &&
           @matched_expense_by_date["amount"].to_f == expense["amount"].to_f)
-          return true
+        return true
       else
         return false
       end
