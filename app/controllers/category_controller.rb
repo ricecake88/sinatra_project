@@ -5,50 +5,80 @@ class CategoryController < ApplicationController
   enable :sessions
 
   get '/categories' do
-    @categories = Category.all
-    erb :'category/index'
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @categories = Category.all
+      erb :'category/index'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect '/'
+    end
   end
 
   patch '/categories/edit' do
-    @categories = params[:category]
-    @categories.each do |cat|
-      category = Category.find(cat["id"])
-      if !category.nil?
-        if cat["name"] != category.category_name
-          category.update(:category_name => cat["name"])
-          category.save
-          flash[:message] = "Modified category"
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @categories = params[:category]
+      @categories.each do |cat|
+        category = Category.find(cat["id"])
+        if !category.nil?
+          if cat["name"] != category.category_name
+            category.update(:category_name => cat["name"])
+            category.save
+            flash[:message] = "Modified category"
+          end
         end
       end
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect '/'
     end
     redirect to '/categories'
   end
 
   post '/categories/add' do
-    if !exists_already?(params[:category_name])
-      name = params[:category_name]
-      cat = Category.create(:category_name => name)
-      Category.all << cat
-      cat.save
-      flash[:message] = "Added category!"
-    else
-      flash[:message] = "Error, category already exists"
-    end
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      if !exists_already?(params[:category_name])
+        name = params[:category_name]
+        cat = Category.create(:category_name => name)
+        Category.all << cat
+        cat.save
+        flash[:message] = "Added category!"
+      else
+        flash[:message] = "Error, category already exists"
+      end
       redirect to '/categories'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect to '/'
+    end
   end
 
   get '/categories/show' do
-    @categories = Category.all
-    erb :'/category/show'
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @categories = Category.all
+      erb :'/category/show'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect '/'
+    end
   end
 
   delete '/categories/delete' do
-    @categories = params[:category]
-    @categories.each do |cat|
-      category = Category.find(cat["id"])
-      if !category.nil?
-        category.delete
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @categories = params[:category]
+      @categories.each do |cat|
+        category = Category.find(cat["id"])
+        if !category.nil?
+          category.delete
+        end
       end
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect '/'
     end
     redirect to '/categories'
   end

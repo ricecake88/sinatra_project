@@ -5,31 +5,56 @@ class BudgetController < ApplicationController
   enable :sessions
 
   get '/budgets' do
-    @budgets = Budget.all
-    erb :'budget/index'
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @budgets = Budget.all
+      erb :'budget/index'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      erb :'/'
+    end
+
   end
 
   get '/budgets/add' do
-    erb :'/budget/add'
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      erb :'/budget/add'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      erb :'/'
+    end
   end
 
   get '/budgets/:id' do
-    @budget = Budget.find(params[:id])
-    erb :'/budget/show'
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @budget = Budget.find(params[:id])
+      erb :'/budget/show'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      erb :'/'
+    end
   end
 
   post '/budgets/add' do
-    if cat_exists?(params[:budget]["category"])
-      flash[:message] = "OOPS, already set a budget for this category"
-      redirect to "/budgets/add"
-    elsif !params["budget"]["amount"].empty? && !params["budget"]["category"].empty?
-      @budget = Budget.create(:category_id => params["budget"]["category"].to_i, :amount => params["budget"]["amount"])
-      Budget.all << @budget
-      @budget.save
-      redirect to "/budgets/#{@budget.id}"
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      if cat_exists?(params[:budget]["category"])
+        flash[:message] = "OOPS, already set a budget for this category"
+        redirect to "/budgets/add"
+      elsif !params["budget"]["amount"].empty? && !params["budget"]["category"].empty?
+        @budget = Budget.create(:category_id => params["budget"]["category"].to_i, :amount => params["budget"]["amount"])
+        Budget.all << @budget
+        @budget.save
+        redirect to "/budgets/#{@budget.id}"
+      else
+        flash[:message] = "Sorry, either the amount or category entered is empty"
+        redirect to "/budgets/add"
+      end
     else
-      flash[:message] = "Sorry, either the amount or category entered is empty"
-      redirect to "/budgets/add"
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      erb :'/'
     end
   end
 

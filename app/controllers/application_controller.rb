@@ -35,6 +35,7 @@ class ApplicationController < Sinatra::Base
   post '/login' do
     if params[:username].empty? || params[:password].empty?
       flash[:message] = "Sorry, username or password field missing."
+      redirect '/'
     else
       @user = User.find_by(username: params[:username], password: params[:password])
       if @user
@@ -42,7 +43,7 @@ class ApplicationController < Sinatra::Base
         redirect '/account'
       else
         flash[:message] = "Sorry, username/password combination does not exist."
-        redirect '/login'
+        redirect '/'
       end
     end
   end
