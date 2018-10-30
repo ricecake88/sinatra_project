@@ -1,2 +1,4 @@
-<%= Category.find(@budget.category_id).category_name %>
-<%= @budget.amount %>
+<% if Helpers.is_logged_in?(@sessionName) %>
+  <%= Category.find(@budget.category_id).category_name %>
+  <%= @budget.amount %>
+<% end %>

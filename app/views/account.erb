@@ -1,7 +1,11 @@
-<p>
-<a href="expense">Enter an expense</a> |
-<a href="categories">Manage Categories</a> |
-<a href="budgets">Budgets</a><br/>
-</p>
+<% if Helpers.is_logged_in?(@sessionName) %>
 
-<p><a href="/logout">Log Out</a></p>
+  <p>Welcome <%= Helpers.current_user(@sessionName).username %></p>
+  <p>
+  <a href="expense">Enter an expense</a> |
+  <a href="categories">Manage Categories</a> |
+  <a href="budgets">Budgets</a><br/>
+  </p>
+
+  <p><a href="/logout">Log Out</a></p>
+<% end %>

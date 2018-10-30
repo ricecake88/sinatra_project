@@ -1,15 +1,18 @@
-<p>Current Budget Limits:</p>
+<% if Helpers.is_logged_in?(@sessionName) %>
 
-<% if @budgets.empty? || @budgets.nil? %>
+  <p>Current Budget Limits:</p>
+
+  <% if @budgets.empty? || @budgets.nil? %>
+    <p>
+    Budgets not entered<br/>
+    <a href="/budgets/add">Add a budget?</a>
+   </p>
+  <% end %>
+
+  <% @budgets.each do |b| %>
   <p>
-  Budgets not entered<br/>
-  <a href="/budgets/add">Add a budget?</a>
- </p>
-<% end %>
-
-<% @budgets.each do |b| %>
-<p>
-  Category Name: <%= Category.find(b.category_id).category_name %>
-  Category Budget Amount: <%= b.amount %>
-</p>
+    Category Name: <%= Category.find(b.category_id).category_name %>
+    Category Budget Amount: <%= b.amount %>
+  </p>
+  <% end %>
 <% end %>

@@ -1,24 +1,27 @@
-<p>Add a budget</p>
+<% if Helpers.is_logged_in?(@sessionName) %>
 
-<p>
-  <div id="error">
-<% if flash.has?(:message) %>
-  <%= flash[:message] %>
+  <p>Add a budget</p>
+
+  <p>
+    <div id="error">
+  <% if flash.has?(:message) %>
+    <%= flash[:message] %>
+  <% end %>
+    </div>
+  </p>
+
+
+  <form method="post" action="/budgets/add">
+    <% Category.create_category_if_empty %>
+    <select name="budget[category]">
+      <% Category.all.each do |cat| %>
+        <option value="<%= cat.id %>"><%= cat.category_name %></option>
+      <% end %>
+    </select>
+
+    <label for="budget[amount]">Amount:</label>
+    <input type="number" step="any" name="budget[amount]"><br/>
+
+    <input type="submit" value="submit">
+  </form>
 <% end %>
-  </div>
-</p>
-
-
-<form method="post" action="/budgets/add">
-  <% Category.create_category_if_empty %>
-  <select name="budget[category]">
-    <% Category.all.each do |cat| %>
-      <option value="<%= cat.id %>"><%= cat.category_name %></option>
-    <% end %>
-  </select>
-
-  <label for="budget[amount]">Amount:</label>
-  <input type="number" step="any" name="budget[amount]"><br/>
-
-  <input type="submit" value="submit">
-</form>

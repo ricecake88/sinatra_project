@@ -1,18 +1,20 @@
 <html>
 
-<p>
-All Expenses:
-</p>
+<% if Helpers.is_logged_in?(@sessionName) %>
+  <p>
+  All Expenses:
+  </p>
 
-<% @expenses.each do |expense| %>
-<p>
-  <%= expense.date %> |
-  <%= expense.amount %> |
-  <%= expense.merchant %> |
-  <%= expense.description %> |
-  <%= Category.find(expense.category_id).category_name %>
-</p>
+  <% @expenses.each do |expense| %>
+  <p>
+    <%= expense.date %> |
+    <%= expense.amount %> |
+    <%= expense.merchant %> |
+    <%= expense.description %> |
+    <%= Category.find(expense.category_id).category_name %>
+  </p>
+  <% end %>
+
+  <a href="/expense/add">Add a new expense</a>
 <% end %>
-
-<a href="/expense/add">Add a new expense</a>
 </html>
