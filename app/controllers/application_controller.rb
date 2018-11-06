@@ -27,12 +27,14 @@ class ApplicationController < Sinatra::Base
     else
       @user = User.create(username: params[:username], password: params[:password])
       if @user.save
+        flash[:message] = "Account created. Please sign in!"
         redirect '/'
       end
     end
   end
 
   post '/login' do
+    binding.pry
     if params[:username].empty? || params[:password].empty?
       flash[:message] = "Sorry, username or password field missing."
       redirect '/'
