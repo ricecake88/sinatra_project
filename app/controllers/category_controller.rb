@@ -41,6 +41,8 @@ class CategoryController < ApplicationController
     if Helpers.is_logged_in?(session)
       if !exists_already?(params[:category_name])
         name = params[:category_name]
+        user = Helpers.current_user(@sessionName)
+        binding.pry
         cat = Category.create(:category_name => name)
         Category.all << cat
         cat.save
