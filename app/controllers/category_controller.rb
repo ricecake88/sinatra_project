@@ -6,8 +6,16 @@ class CategoryController < ApplicationController
 
   get '/categories' do
     @sessionName = session
+    @categories = []
     if Helpers.is_logged_in?(session)
-      @categories = Category.all
+      user_id = Helpers.current_user(session).id
+      binding.pry
+      Category.all.each do |cat|
+        if cat.user_id == user_id
+          @categories << cat
+        end
+      end
+      binding.pry
       erb :'category/index'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -42,8 +50,7 @@ class CategoryController < ApplicationController
       if !exists_already?(params[:category_name])
         name = params[:category_name]
         user = Helpers.current_user(@sessionName)
-        binding.pry
-        cat = Category.create(:category_name => name)
+        cat = Category.create(:category_name => name, :user_id => user.id)
         Category.all << cat
         cat.save
         flash[:message] = "Added category!"

@@ -34,7 +34,6 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/login' do
-    binding.pry
     if params[:username].empty? || params[:password].empty?
       flash[:message] = "Sorry, username or password field missing."
       redirect '/'
