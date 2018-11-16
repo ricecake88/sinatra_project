@@ -5,6 +5,7 @@ class BudgetController < ApplicationController
   enable :sessions
 
   get '/budgets' do
+    binding.pry
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @budgets = Budget.all

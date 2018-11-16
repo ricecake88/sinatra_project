@@ -12,7 +12,7 @@
 
 
   <form method="post" action="/budgets/add">
-    <% Category.create_category_if_empty %>
+    <% Category.create_category_if_empty(@sessionName) %>
     <select name="budget[category]">
       <% Category.all.each do |cat| %>
         <option value="<%= cat.id %>"><%= cat.category_name %></option>
