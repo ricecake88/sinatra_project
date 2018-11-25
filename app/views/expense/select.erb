@@ -2,19 +2,19 @@
 
 <% if Helpers.is_logged_in?(@sessionName) %>
   <p>
-  All Expenses:
+  Select an Expense
   </p>
 
   <% @expenses.each do |expense| %>
   <p>
-      <%= expense.date %> |
+    <form method="post" action="/expense/<%= expense.id %>/edit">
+    <input type="radio" name="expense_id" value="<%= expense.id %>"> <%= expense.date %> |
       <%= expense.amount %> |
       <%= expense.merchant %> |
       <%= expense.description %> |
       <%= Category.find(expense.category_id).category_name %>
   </p>
   <% end %>
-
-  <a href="/expense/add">Add a new expense</a> | <a href="/expense/select">Edit expenses</a>
+  <input type="submit" value="Edit the selected expense">
 <% end %>
 </html>

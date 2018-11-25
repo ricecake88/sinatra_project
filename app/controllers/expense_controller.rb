@@ -25,6 +25,29 @@ class ExpenseController < ApplicationController
     end
   end
 
+  get '/expense/select' do
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @expenses = Expense.all
+      erb :'expense/select'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page/"
+      redirect '/'
+    end
+  end
+
+  post '/expense/:id/edit' do
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      binding.pry
+      @expense = Expense.find(params[:expense_id])
+      erb :'expense/edit'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page/"
+      redirect '/'
+    end
+  end
+
   get '/expense/:id' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
@@ -44,7 +67,6 @@ class ExpenseController < ApplicationController
           !params[:expense]["description"].empty? &&
           !params[:expense]["merchant"].empty?)
           @matched_expense = entry_already_exists?(params[:expense])
-          binding.pry
           if !@matched_expense
             @expense = Expense.create(params[:expense])
             Expense.all << @expense

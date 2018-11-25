@@ -1,0 +1,15 @@
+<html>
+
+<% if Helpers.is_logged_in?(@sessionName) %>
+  <p>
+  Update an Expense
+  </p>
+
+  <%= @expense.id %>
+  <%= @expense.date %>
+  <%= @expense.description %>
+  <%= @expense.amount %>
+  <%= @expense.merchant %>
+
+<% end %>
+</html>
