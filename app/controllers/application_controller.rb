@@ -52,6 +52,9 @@ class ApplicationController < Sinatra::Base
   get '/account' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      @user = Helpers.current_user(@sessionName)
+      binding.pry
+      Expenses_Users.find_by(:user_id => @user.id)
       erb :account
     else
       flash[:message] = "Sorry you are not logged in."

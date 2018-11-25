@@ -13,8 +13,10 @@
       <%= expense.merchant %> |
       <%= expense.description %> |
       <%= Category.find(expense.category_id).category_name %>
+      <input type="submit" value="Edit">
+    </form>
   </p>
   <% end %>
-  <input type="submit" value="Edit the selected expense">
+</form>
 <% end %>
 </html>

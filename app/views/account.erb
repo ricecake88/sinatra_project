@@ -1,6 +1,19 @@
 <% if Helpers.is_logged_in?(@sessionName) %>
 
   <p>Welcome <%= Helpers.current_user(@sessionName).username %></p>
+
+  <% if @expenses != nil %>
+    <% @expenses.each do |expense| %>
+    <p>
+        <%= expense.date %> |
+        <%= expense.amount %> |
+        <%= expense.merchant %> |
+        <%= expense.description %> |
+        <%= Category.find(expense.category_id).category_name %>
+    </p>
+    <% end %>
+  <% end %>
+
   <p>
   <a href="expense">Enter an expense</a> |
   <a href="categories">Manage Categories</a> |
