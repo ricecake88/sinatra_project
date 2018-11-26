@@ -5,14 +5,16 @@
   All Expenses:
   </p>
 
-  <% @expenses.each do |expense| %>
-  <p>
-      <%= expense.date %> |
-      <%= expense.amount %> |
-      <%= expense.merchant %> |
-      <%= expense.description %> |
-      <%= Category.find(expense.category_id).category_name %>
-  </p>
+  <% if !@expenses.nil? %>
+    <% @expenses.each do |expense| %>
+    <p>
+        <%= expense.date %> |
+        <%= expense.amount %> |
+        <%= expense.merchant %> |
+        <%= expense.description %> |
+        <%= Category.find(expense.category_id).category_name %>
+    </p>
+    <% end %>
   <% end %>
 
   <a href="/expense/add">Add a new expense</a> | <a href="/expense/select">Edit expenses</a>
