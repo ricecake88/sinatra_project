@@ -53,7 +53,7 @@ class ApplicationController < Sinatra::Base
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @user = Helpers.current_user(@sessionName)
-      categories = Category.find_by(:user_id => @user.id)
+      @expenses = Helpers.expenses_for_user(@user)
       binding.pry
       erb :account
     else

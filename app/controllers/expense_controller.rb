@@ -7,6 +7,9 @@ class ExpenseController < ApplicationController
   get '/expense' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      user = Helpers.current_user(@sessionName)
+      @expenses = Helpers.expenses_for_user(user)
+      binding.pry
       erb :'expense/index'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
