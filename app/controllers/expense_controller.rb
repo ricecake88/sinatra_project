@@ -19,6 +19,7 @@ class ExpenseController < ApplicationController
   get '/expense/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      @expenses = Expenses_Users.find_by(:user_id => Helpers.current_user(@sessionName))
       erb :'expense/add'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
