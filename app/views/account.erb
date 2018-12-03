@@ -12,6 +12,7 @@
         <%= Category.find(expense.category_id).category_name %>
     </p>
     <% end %>
+    <%= Expense.total_expenses_for_user(@expenses) %>
   <% end %>
 
   <p>
