@@ -2,7 +2,7 @@
 
   <p>Welcome <%= Helpers.current_user(@sessionName).username %></p>
 
-  <% if @expenses != nil %>
+  <% if !@expenses.empty? %>
     <% @expenses.each do |expense| %>
     <p>
         <%= expense.date %> |

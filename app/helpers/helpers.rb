@@ -13,17 +13,21 @@ class Helpers
 
   def self.expenses_for_user(user)
     @expenses = []
-    binding.pry
-    categories = Category.find_every(:user_id => user.id)
+    categories_users = []
+    categories = Category.all
     if !categories.nil?
       categories.each do |cat|
-        Expense.all.each do |e|
-          if cat.id == e.cat_id
-            @expenses << e
-          end
+        if cat.user_id = user.id
+          categories_users << cat
+        end
+      end
+      Expense.all.each do |expense|
+        if expense.category_id == cat.id
+          @expenses << expense
         end
       end
     end
+    @expenses
   end
 
 end
