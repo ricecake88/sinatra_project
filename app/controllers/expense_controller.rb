@@ -7,8 +7,7 @@ class ExpenseController < ApplicationController
   get '/expense' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      user = Helpers.current_user(@sessionName)
-      @expenses = Helpers.expenses_for_user(user)
+      @expenses = Expense.expenses_for_user(@sessionName)
       binding.pry
       erb :'expense/index'
     else
@@ -29,8 +28,8 @@ class ExpenseController < ApplicationController
 
   get '/expense/select' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
-      @expenses = Helpers.expenses_for_user(Helpers.current_user(session))
+    if Helpers.is_logged_in?(@sessionName)
+      @expenses = Expense.expenses_for_user(@sessionName)
       erb :'expense/select'
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
@@ -40,9 +39,10 @@ class ExpenseController < ApplicationController
 
   post '/expense/:id/edit' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
-      binding.pry
+    if Helpers.is_logged_in?(@sessionName)
       @expense = Expense.find(params[:expense_id])
+      @categories = Category.categories_of_user(@sessionName)
+      binding.pry
       erb :'expense/edit'
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"

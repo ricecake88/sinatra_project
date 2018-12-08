@@ -11,18 +11,4 @@ class Helpers
     end
   end
 
-  def self.expenses_for_user(user)
-    @expenses = []
-    categories_user = []
-    categories_user = Category.where(:user_id => user.id)
-    if !categories_user.nil?
-      Expense.all.each do |expense|
-        if categories_user.ids.include?(expense.category_id)
-          @expenses << expense
-        end
-      end
-    end
-    @expenses
-  end
-
 end

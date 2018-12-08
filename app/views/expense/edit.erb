@@ -9,6 +9,11 @@
     <input type="date" value="<%= @expense.date %>"><br/>
     <input type="text" value="<%= @expense.description %>"><br/>
     <input type="number" value="<%= @expense.amount %>"><br/>
+    <select>
+      <% @categories.each do |cat| %>
+      <option><%= cat.category_name %></option>
+      <% end %>
+    </select>
     <input type="text" value="<%= @expense.merchant %>"><br/>
     <input type="submit" value="Update"
   </form>
