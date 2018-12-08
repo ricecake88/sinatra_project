@@ -9,13 +9,11 @@ class CategoryController < ApplicationController
     @categories = []
     if Helpers.is_logged_in?(session)
       user_id = Helpers.current_user(session).id
-      binding.pry
       Category.all.each do |cat|
         if cat.user_id == user_id
           @categories << cat
         end
       end
-      binding.pry
       erb :'category/index'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
