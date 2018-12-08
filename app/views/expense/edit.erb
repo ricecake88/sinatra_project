@@ -5,11 +5,13 @@
   Update an Expense
   </p>
 
-  <%= @expense.id %>
-  <%= @expense.date %>
-  <%= @expense.description %>
-  <%= @expense.amount %>
-  <%= @expense.merchant %>
+  <form method="post" type="/expense/<%= @expense.id %>">
+    <input type="date" value="<%= @expense.date %>"><br/>
+    <input type="text" value="<%= @expense.description %>"><br/>
+    <input type="number" value="<%= @expense.amount %>"><br/>
+    <input type="text" value="<%= @expense.merchant %>"><br/>
+    <input type="submit" value="Update"
+  </form>
 
 <% end %>
 </html>

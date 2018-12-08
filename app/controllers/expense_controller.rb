@@ -30,7 +30,7 @@ class ExpenseController < ApplicationController
   get '/expense/select' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @expenses = Expenses_Users.find_by(Helpers.current_user(session))
+      @expenses = Helpers.expenses_for_user(Helpers.current_user(session))
       erb :'expense/select'
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
