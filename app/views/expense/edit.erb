@@ -5,7 +5,8 @@
   Update an Expense
   </p>
 
-  <form method="post" type="/expense/<%= @expense.id %>">
+  <form method="post" action="/expense/<%= @expense.id %>">
+    <input id="hidden" type="hidden" name="_method" value="patch">
     <input type="date" name="expense[date]" value="<%= @expense.date %>"><br/>
     <input type="text" name="expense[description]" value="<%= @expense.description %>"><br/>
     <input type="number" name="expense[amount]" value="<%= @expense.amount %>"><br/>
@@ -15,7 +16,7 @@
       <% end %>
     </select>
     <input type="text" name="expense[merchant]" value="<%= @expense.merchant %>"><br/>
-    <input type="submit" value="Update"
+    <input type="submit" value="Update">
   </form>
 
 <% end %>

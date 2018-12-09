@@ -8,7 +8,6 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expenses = Expense.expenses_for_user(@sessionName)
-      binding.pry
       erb :'expense/index'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -37,6 +36,19 @@ class ExpenseController < ApplicationController
     end
   end
 
+  patch '/expense/:id' do
+    @sessionName = session
+    if Helpers.is_logged_in?(@sessionName)
+      @expense = Expense.find(params[:id])
+      @expense.update(params[:expense])
+      @expense.save
+      redirect to "/expense/#{@expense.id}"
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect '/'
+    end
+  end
+
   post '/expense/:id/edit' do
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
@@ -45,7 +57,7 @@ class ExpenseController < ApplicationController
       binding.pry
       erb :'expense/edit'
     else
-      flash[:message] = "Illegal action. Please log-in to access this page/"
+      flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
   end
@@ -63,7 +75,7 @@ class ExpenseController < ApplicationController
 
   post '/expense/add' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    if Helpers.is_logged_in?(@sessionName)
       if (!params[:expense]["date"].empty? &&
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
@@ -88,6 +100,8 @@ class ExpenseController < ApplicationController
       redirect '/'
     end
   end
+
+
 
   helpers do
     def entry_already_exists?(expense)
