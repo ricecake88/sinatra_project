@@ -51,9 +51,9 @@ class ApplicationController < Sinatra::Base
 
   get '/account' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    if Helpers.is_logged_in?(@sessionName)
       @user = Helpers.current_user(@sessionName)
-      @expenses = Helpers.expenses_for_user(@user)
+      @expenses = Expense.expenses_for_user(@sessionName)
       binding.pry
       erb :account
     else

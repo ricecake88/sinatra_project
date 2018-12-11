@@ -2,17 +2,19 @@
 
   <p>Current Budget Limits:</p>
 
+<% binding.pry %>
   <% if @budgets.empty? || @budgets.nil? %>
     <p>
     Budgets not entered<br/>
-    <a href="/budgets/add">Add a budget?</a>
    </p>
   <% end %>
 
   <% @budgets.each do |b| %>
   <p>
-    Category Name: <%= Category.find(b.category_id).category_name %>
-    Category Budget Amount: <%= b.amount %>
+    <% Category.create_category_if_empty(@sessionName) %>
+    Category Name: <%= Category.find(b.category_id).category_name %><br/>
+    Category Budget Amount: <%= b.amount %><br/>
   </p>
+  <a href="/budgets/add">Add a budget?</a>
   <% end %>
 <% end %>
