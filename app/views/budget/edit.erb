@@ -1,0 +1,28 @@
+Test 
+
+<% if Helpers.is_logged_in?(@sessionName) %>
+
+  <p>Edit a budget</p>
+
+  <p>
+    <div id="error">
+  <% if flash.has?(:message) %>
+    <%= flash[:message] %>
+  <% end %>
+    </div>
+  </p>
+
+
+  <form method="post" action="/budgets/<%= @budget.id %>">
+    <select name="budget[category]">
+      <% Category.categories_of_user(@sessionName).each do |cat| %>
+        <option value="<%= cat.id %>" <% "selected" if @budget.cat_id == cat.id %>><%= cat.category_name %></option>
+      <% end %>
+    </select>
+
+    <label for="budget[amount]">Amount:</label>
+    <input type="number" step="any name="budget[amount]" value="<%=budget.amount %>"><br/>
+
+    <input type="submit" value="Update">
+  </form>
+<% end %>
