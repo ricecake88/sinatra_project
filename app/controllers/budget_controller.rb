@@ -17,10 +17,25 @@ class BudgetController < ApplicationController
 
   end
 
+  get '/budgets/add' do
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      erb :'/budget/add'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      erb :'/'
+    end
+  end
+
   get '/budgets/:id/edit' do
-    @budget = Budget.find(params[:id])
-    binding.pry
-    erb :'/budget/edit'
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @budget = Budget.find(params[:id])
+      erb :'/budget/edit'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      erb :'/'
+    end
   end
 
   get '/budgets/:id' do
@@ -33,18 +48,6 @@ class BudgetController < ApplicationController
       erb :'/'
     end
   end
-
-  get '/budgets/add' do
-    @sessionName = session
-    if Helpers.is_logged_in?(session)
-      erb :'/budget/add'
-    else
-      flash[:message] = "Illegal action. Please log-in to access this page."
-      erb :'/'
-    end
-  end
-
-
 
   post '/budgets/add' do
     binding.pry
@@ -69,6 +72,19 @@ class BudgetController < ApplicationController
     end
   end
 
+patch '/budgets/:id/edit' do
+  @sessionName = session
+  if Helpers.is_logged_in?(session)
+    binding.pry
+    @budget = Budget.find(params[:id])
+    @budget.update(:amount => params[:amount])
+    @budget.save
+    redirect to '/budgets'
+  else
+    flash[:message] = "Illegal action. Please log-in to access this page."
+    erb :'/'
+  end
+end
 
 
   helpers do
