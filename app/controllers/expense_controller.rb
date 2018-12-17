@@ -8,7 +8,7 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expenses = Expense.expenses_for_user(@sessionName)
-      erb :'expense/index'
+      erb :'expense/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -18,7 +18,7 @@ class ExpenseController < ApplicationController
   get '/expense/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      erb :'expense/add'
+      erb :'expense/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -29,7 +29,7 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
       @expenses = Expense.expenses_for_user(@sessionName)
-      erb :'expense/select'
+      erb :'expense/select', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
       redirect '/'
@@ -55,7 +55,7 @@ class ExpenseController < ApplicationController
       @expense = Expense.find(params[:expense_id])
       @categories = Category.categories_of_user(@sessionName)
       binding.pry
-      erb :'expense/edit'
+      erb :'expense/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -66,7 +66,7 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expense = Expense.find(params[:id])
-      erb :'expense/show'
+      erb :'expense/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'

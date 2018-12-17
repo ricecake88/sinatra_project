@@ -1,5 +1,5 @@
-<% if Helpers.is_logged_in?(@sessionName) %>
+<p>Budgets</p>
+
   <%= Category.find(@budget.category_id).category_name %>
   <%= @budget.amount %>
   <a href="/budgets/<%= @budget.id %>/edit">Edit</a><br/>
-<% end %>

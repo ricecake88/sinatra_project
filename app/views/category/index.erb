@@ -2,8 +2,10 @@
 <head><title>All Categories</title></head>
 <body>
 
-<% if Helpers.is_logged_in?(@sessionName) %>  
-  Existing Categories
+<% if Helpers.is_logged_in?(@sessionName) %>
+<p>Manage Categories</p>
+
+  <p>Existing Categories</p>
   <% if flash.has?(:message) %>
     <%= flash[:message] %>
   <% end %>
@@ -17,7 +19,7 @@
       <input type="submit" value="Modify Categories">
   </form>
 
-  Add a Category
+  <p>Add a Category</p>
   <form method="post" action="/categories/add">
   <p>
   <label for="category_name">Category Name</label><br/>

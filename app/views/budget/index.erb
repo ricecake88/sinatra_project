@@ -1,11 +1,8 @@
-<% if Helpers.is_logged_in?(@sessionName) %>
-
   <p>Current Budget Limits:</p>
 
-<% binding.pry %>
   <% if @budgets.empty? || @budgets.nil? %>
     <p>
-    Budgets not entered<br/>
+    No Budgets Set<br/>
    </p>
   <% end %>
 
@@ -13,8 +10,8 @@
   <p>
     <% Category.create_category_if_empty(@sessionName) %>
     Category Name: <%= Category.find(b.category_id).category_name %><br/>
-    Category Budget Amount: <%= b.amount %><br/>
+    Category Budget Amount: <%= b.amount %>
+    <a href="/budgets/<%= b.id %>/edit">Edit</a>
   </p>
   <% end %>
   <a href="/budgets/add">Add a budget?</a>
-<% end %>

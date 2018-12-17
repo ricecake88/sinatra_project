@@ -1,7 +1,3 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-<% if Helpers.is_logged_in?(@sessionName) %>
   <p>Enter an Expense</p>
 
   <p>
@@ -34,9 +30,9 @@
   <input type="text" name="expense[merchant]">
 
   <p>
-  <input type="submit" value="Enter Expense">
+  <input type="submit" value="Enter Expense"><br/>
   </p>
 
+  <p><a href="/expense">Manage Expenses</a><br/></p>
+
   </form>
-<% end %>
-</html>

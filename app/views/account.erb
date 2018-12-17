@@ -1,25 +1,21 @@
-<% if Helpers.is_logged_in?(@sessionName) %>
-
-  <p>Welcome <%= Helpers.current_user(@sessionName).username %></p>
-
   <% if !@expenses.empty? %>
-    <% @expenses.each do |expense| %>
     <p>
-        <%= expense.date %> |
-        <%= expense.amount %> |
-        <%= expense.merchant %> |
-        <%= expense.description %> |
-        <%= Category.find(expense.category_id).category_name %>
-    </p>
+      <table width="50%"><tr><td>Date</td><td>Amount</td><td>Merchant</td><td>Description</td><td>Category</td></tr>
+    <% @expenses.each do |expense| %>
+      <tr>
+        <td><%= expense.date %></td>
+        <td><%= expense.amount %></td>
+        <td><%= expense.merchant %></td>
+        <td><%= expense.description %></td>
+        <td><%= Category.find(expense.category_id).category_name %></td>
+      </tr>
     <% end %>
-    <%= Expense.total_expenses_for_user(@expenses) %>
-  <% end %>
-
-  <p>
-  <a href="expense">Manage Expenses</a> |
-  <a href="categories">Manage Categories</a> |
-  <a href="budgets">Budgets</a><br/>
+  </table>
   </p>
+    <p>Total Expenses: <%= Expense.total_expenses_for_user(@expenses) %></p>
 
-  <p><a href="/logout">Log Out</a></p>
-<% end %>
+    <p>Budget Goals</p>
+    <% Category.all.each do |cat| %>
+      --- Display expenses for the month for each category here --
+    <% end %>
+  <% end %>

@@ -14,7 +14,7 @@ class CategoryController < ApplicationController
           @categories << cat
         end
       end
-      erb :'category/index'
+      erb :'category/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -66,7 +66,7 @@ class CategoryController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @categories = Category.all
-      erb :'/category/show'
+      erb :'/category/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'

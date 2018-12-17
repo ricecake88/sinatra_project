@@ -55,7 +55,7 @@ class ApplicationController < Sinatra::Base
       @user = Helpers.current_user(@sessionName)
       @expenses = Expense.expenses_for_user(@sessionName)
       binding.pry
-      erb :account
+      erb :account, :layout => :layout_loggedin
     else
       flash[:message] = "Sorry you are not logged in."
       redirect '/login'

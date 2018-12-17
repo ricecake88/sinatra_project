@@ -5,11 +5,10 @@ class BudgetController < ApplicationController
   enable :sessions
 
   get '/budgets' do
-    binding.pry
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @budgets = Budget.all
-      erb :'budget/index'
+      erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       erb :'/'
@@ -20,7 +19,7 @@ class BudgetController < ApplicationController
   get '/budgets/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      erb :'/budget/add'
+      erb :'/budget/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       erb :'/'
@@ -31,7 +30,7 @@ class BudgetController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @budget = Budget.find(params[:id])
-      erb :'/budget/edit'
+      erb :'/budget/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       erb :'/'
@@ -42,7 +41,7 @@ class BudgetController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @budget = Budget.find(params[:id])
-      erb :'/budget/show'
+      erb :'/budget/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       erb :'/'
@@ -50,14 +49,12 @@ class BudgetController < ApplicationController
   end
 
   post '/budgets/add' do
-    binding.pry
     @sessionName = session
     if Helpers.is_logged_in?(session)
       if cat_exists?(params[:budget]['category'])
         flash[:message] = "OOPS, already set a budget for this category"
         redirect to "/budgets/add"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
-        binding.pry
         @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"])
         Budget.all << @budget
         @budget.save
