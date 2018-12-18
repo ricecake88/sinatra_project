@@ -23,7 +23,7 @@ class Expense < ActiveRecord::Base
     end
 
     def self.expenses_by_user_category(sessionName, category_id)
-      @expenses = Expense.find_by(:category_id => category_id)
+      @expenses = Expense.where(:category_id => category_id)
     end
 
 end

@@ -18,6 +18,7 @@
     <% categories = Category.categories_of_user(@sessionName) %>
     <% categories.each do |cat| %>
       <% expenses_by_category = Expense.expenses_by_user_category(@sessionName, cat.id) %>
+      <% binding.pry %>
     <% end %>
 
     <p>Budget Goals</p>
