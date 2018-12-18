@@ -22,4 +22,8 @@ class Expense < ActiveRecord::Base
       @expenses
     end
 
+    def self.expenses_by_user_category(sessionName, category_id)
+      @expenses = Expense.find_by(:category_id => category_id)
+    end
+
 end

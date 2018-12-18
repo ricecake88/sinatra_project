@@ -1,8 +1,3 @@
-<html>
-<head><title>All Categories</title></head>
-<body>
-
-<% if Helpers.is_logged_in?(@sessionName) %>
 <p>Manage Categories</p>
 
   <p>Existing Categories</p>
@@ -12,6 +7,7 @@
 
   <form method="post" action="/categories/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
+    <% Category.create_category_if_empty(@sessionName) %>
   <% @categories.each do |cat|%>
       <input type="hidden" name="category[][id]" value="<%= cat.id %>">
       <input type="text" name="category[][name]" value="<%= cat.category_name %>"><br/>
@@ -27,7 +23,3 @@
   </p>
   <input type="submit" value="Submit Category">
   </form>
-
-<% end %>
-</body>
-</html>

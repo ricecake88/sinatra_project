@@ -1,3 +1,4 @@
+  Hello, <%= Helpers.current_user(@sessionName).username %>!
   <% if !@expenses.empty? %>
     <p>
       <table width="50%"><tr><td>Date</td><td>Amount</td><td>Merchant</td><td>Description</td><td>Category</td></tr>
@@ -13,9 +14,11 @@
   </table>
   </p>
     <p>Total Expenses: <%= Expense.total_expenses_for_user(@expenses) %></p>
+    <% total = 0 %>
+    <% categories = Category.categories_of_user(@sessionName) %>
+    <% categories.each do |cat| %>
+      <% expenses_by_category = Expense.expenses_by_user_category(@sessionName, cat.id) %>
+    <% end %>
 
     <p>Budget Goals</p>
-    <% Category.all.each do |cat| %>
-      --- Display expenses for the month for each category here --
-    <% end %>
   <% end %>
