@@ -1,0 +1,18 @@
+<html>
+<head><title></title></head>
+<body>
+<% if Helpers.is_logged_in?(@sessionName) %>
+
+  <%= yield %>
+
+  <p>
+  <a href="/account">Home</a> |
+  <a href="/expense">Manage Expenses</a> |
+  <a href="/categories">Manage Categories</a> |
+  <a href="/budgets">Manage Budgets</a>
+  </p>
+
+  <a href="/logout">Log Out</a>
+<% end %>
+</body>
+</html>
