@@ -26,4 +26,9 @@ class Expense < ActiveRecord::Base
       @expenses = Expense.where(:category_id => category_id)
     end
 
+    def self.expenses_last_30_days(sessionName)
+    end
+
+    def self.expense_by_month(month)
+
 end

@@ -58,7 +58,7 @@ class ExpenseController < ApplicationController
       erb :'expense/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      redirect '/'
+      redirect to '/'
     end
   end
 
@@ -69,7 +69,7 @@ class ExpenseController < ApplicationController
       erb :'expense/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      redirect '/'
+      redirect to '/'
     end
   end
 
@@ -82,22 +82,27 @@ class ExpenseController < ApplicationController
           !params[:expense]["merchant"].empty?)
           @matched_expense = entry_already_exists?(params[:expense])
           if !@matched_expense
-            @expense = Expense.create(params[:expense])
-            Expense.all << @expense
-            @expense.save
-            flash[:message] = "Expense added"
-            redirect to "/expense/#{@expense.id}"
+            if params[:expense]["date"] > Time.now.to_s(:db)
+              flash[:message] = "Invalid date"
+              redirect to '/expense/add'
+            else
+              @expense = Expense.create(params[:expense])
+              Expense.all << @expense
+              @expense.save
+              flash[:message] = "Expense added"
+              redirect to "/expense/#{@expense.id}"
+            end
           else
             flash[:message] = "Already added"
-            redirect '/expense/add'
+            redirect to '/expense/add'
           end
       else
         flash[:message] = "Missing Fields"
-        redirect '/expense/add'
+        redirect to '/expense/add'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      redirect '/'
+      redirect to '/'
     end
   end
 
