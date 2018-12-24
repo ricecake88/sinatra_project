@@ -1,14 +1,5 @@
  <p>Edit a budget</p>
 
-  <p>
-    <div id="error">
-  <% if flash.has?(:message) %>
-    <%= flash[:message] %>
-  <% end %>
-    </div>
-  </p>
-
-
   <form method="post" action="/budgets/<%= @budget.id %>/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
     You are editing the budget for '<%= Category.find(@budget.category_id).category_name %>'<br/>

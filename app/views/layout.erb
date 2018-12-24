@@ -7,7 +7,7 @@
 
 <div id="text-layer">
   <% if flash.has?(:message) %>
-    <%= flash[:message] %>
+    <div id="flash_message"><%= flash[:message] %></div>
   <% end %>
 
   <%= yield %>

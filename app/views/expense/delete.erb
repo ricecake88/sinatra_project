@@ -1,0 +1,11 @@
+<p>
+<%= @expense.date %>
+<%= @expense.amount %>
+<%= @expense.description %>
+<%= @expense.merchant %>
+<%= Category.find(@expense.category_id).category_name %>
+
+<form method="post" action="/expense/<%=@expense.id%>/delete">
+  <input id="hidden" type="hidden" name="_method" value="DELETE">
+  <input type="submit" value="Delete Expense">
+</form>

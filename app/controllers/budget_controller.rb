@@ -52,8 +52,8 @@ class BudgetController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       if cat_exists?(params[:budget]['category'])
-        flash[:message] = "OOPS, already set a budget for this category"
-        redirect to "/budgets/add"
+        flash[:message] = "OOPS, already set a budget for this category. "
+        redirect to "/budgets"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
         @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"])
         Budget.all << @budget
