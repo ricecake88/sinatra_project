@@ -1,10 +1,11 @@
 <html>
 <head><title></title>
-<link rel="stylesheet" type="text/css" href="styles.css">
+  <link rel="stylesheet" type="text/css" href="<%= url('/styles.css') %>">
 </head>
 <body>
 <% if Helpers.is_logged_in?(@sessionName) %>
 
+  <div id="text-layer">
   <%= yield %>
 
   <p>
@@ -15,6 +16,7 @@
   </p>
 
   <a href="/logout">Log Out</a>
+  </div>
 <% end %>
 </body>
 </html>
