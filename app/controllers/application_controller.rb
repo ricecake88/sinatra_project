@@ -8,6 +8,7 @@ class ApplicationController < Sinatra::Base
   register Sinatra::ActiveRecordExtension
   set :session_secret, "my_application_secret"
   set :views, Proc.new { File.join(root, "../views/") }
+  set :public_folder, 'public'
 
   get '/' do
     erb :'index'
@@ -54,7 +55,7 @@ class ApplicationController < Sinatra::Base
     if Helpers.is_logged_in?(@sessionName)
       @user = Helpers.current_user(@sessionName)
       @expenses = Expense.expenses_for_user(@sessionName)
-      binding.pry
+      @expenses_current_month = Expense.expenses_current_month(Helpers.current_year, Helpers.current_month, @sessionName)
       erb :account, :layout => :layout_loggedin
     else
       flash[:message] = "Sorry you are not logged in."
