@@ -1,0 +1,21 @@
+body {
+  background-color: violet;
+  font-family: Sans-Serif;
+  text-align:center;
+/*  width: 100%; */
+/*  padding: 0; */
+/*  border: 0;*/
+/*  margin: 0px 25% 0px 25%; */
+margin: 0px 0px 0px 200px;
+}
+
+#text-layer {
+  background-color: white;
+  position: relative;
+  align:middle;
+  width:75%;
+  border: 0;
+  padding: 4px;
+  margin: 0;
+  text-align: left;
+}
