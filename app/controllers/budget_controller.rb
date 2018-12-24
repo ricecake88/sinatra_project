@@ -7,7 +7,7 @@ class BudgetController < ApplicationController
   get '/budgets' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @budgets = Budget.budgets_for_user
+      @budgets = Budget.budgets_for_user(@sessionName)
       erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
