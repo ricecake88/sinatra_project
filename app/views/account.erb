@@ -13,9 +13,10 @@
     <% end %>
   </table>
   </p>
-    <p>Total Expenses: <%= Expense.total_expenses_for_user(@expenses) %></p>
-    <% categories = Category.categories_of_user(@sessionName) %>
-    <table>
+  <p>Total Expenses: <%= Expense.total_expenses_for_user(@expenses) %></p>
+
+  <% categories = Category.categories_of_user(@sessionName) %>
+    <table><tr><td>Category</td><td>Total Expenses</td><td>Budget Goal</td><td>Amount remaining</td></tr>
     <% categories.each do |cat| %>
       <% total = 0 %>
       <tr><td><%= cat.category_name %></td>
@@ -24,12 +25,32 @@
         <% total += e.amount %>
       <% end %>
       <td><%= total %></td>
-      <% budget = Budget.find_by(:category_id => cat.id).amount %>
-      <td><%= budget %></td>
-      <td><%= budget-total %></td>
+      <% budget = Budget.find_by(:category_id => cat.id) %>
+      <% if !budget.nil? %>
+      <td><%= budget.amount %></td>
+      <td><%= budget.amount - total %></td>
+      <% end %>
     </tr>
     <% end %>
     </table>
 
-    <p>Budget Goals</p>
+  <% end %>
+
+  <p>Current month</p>
+  <% if !@expenses_current_month.empty? %>
+    <% @expenses_current_month.each do |e| %>
+    <p>
+      <table width="50%"><tr><td>Date</td><td>Amount</td><td>Merchant</td><td>Description</td><td>Category</td></tr>
+    <% @expenses.each do |expense| %>
+      <tr>
+        <td><%= expense.date %></td>
+        <td><%= expense.amount %></td>
+        <td><%= expense.merchant %></td>
+        <td><%= expense.description %></td>
+        <td><%= Category.find(expense.category_id).category_name %></td>
+      </tr>
+    <% end %>
+  </table>
+  </p>
+    <% end %>
   <% end %>
