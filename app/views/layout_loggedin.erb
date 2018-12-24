@@ -4,8 +4,11 @@
 </head>
 <body>
 <% if Helpers.is_logged_in?(@sessionName) %>
-
   <div id="text-layer">
+  <% if flash.has?(:message) %>
+    <div id="flash_message"><%= flash[:message] %></div>
+  <% end %>
+
   <%= yield %>
 
   <p>

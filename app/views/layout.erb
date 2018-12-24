@@ -1,11 +1,16 @@
 <html>
-<head><title>Budget Finances</title>
+<head><title>Easy Budget</title>
 <link rel="stylesheet" type="text/css" href="<%= url('/styles.css') %>">
 </head>
 <body>
 
+
 <div id="text-layer">
-<%= yield %>
+  <% if flash.has?(:message) %>
+    <%= flash[:message] %>
+  <% end %>
+
+  <%= yield %>
 </div>
 
 </body>
