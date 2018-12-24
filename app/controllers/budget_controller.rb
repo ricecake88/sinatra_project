@@ -7,7 +7,7 @@ class BudgetController < ApplicationController
   get '/budgets' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @budgets = Budget.all
+      @budgets = Budget.budgets_for_user
       erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -55,7 +55,13 @@ class BudgetController < ApplicationController
         flash[:message] = "OOPS, already set a budget for this category. "
         redirect to "/budgets"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
-        @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"])
+        if params[:budget]["rollover"] == "True"
+          rollover = True
+        else
+          rollover = False
+        end
+        binding.pry
+        @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         Budget.all << @budget
         @budget.save
         redirect to "/budgets/#{@budget.id}"
@@ -74,7 +80,7 @@ patch '/budgets/:id/edit' do
   if Helpers.is_logged_in?(session)
     binding.pry
     @budget = Budget.find(params[:id])
-    @budget.update(:amount => params[:amount])
+    @budget.update(:amount => params[:amount], :rollover => params[:rollover])
     @budget.save
     redirect to '/budgets'
   else

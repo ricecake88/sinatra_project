@@ -10,7 +10,8 @@
   <p>
     <% Category.create_category_if_empty(@sessionName) %>
     Category Name: <%= Category.find(b.category_id).category_name %><br/>
-    Category Budget Amount: <%= b.amount %>
+    Category Budget Amount: <%= b.amount %><br/>
+    Rollover This Amount Month to Month: <%= b.rollover %><br/>
     <a href="/budgets/<%= b.id %>/edit">Edit</a>
   </p>
   <% end %>
