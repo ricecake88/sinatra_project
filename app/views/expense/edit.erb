@@ -1,6 +1,3 @@
-<html>
-
-<% if Helpers.is_logged_in?(@sessionName) %>
   <p>
   Update an Expense
   </p>
@@ -18,6 +15,3 @@
     <input type="text" name="expense[merchant]" value="<%= @expense.merchant %>"><br/>
     <input type="submit" value="Update">
   </form>
-
-<% end %>
-</html>

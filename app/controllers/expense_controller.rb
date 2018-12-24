@@ -4,6 +4,7 @@ class ExpenseController < ApplicationController
   use Rack::Flash
   enable :sessions
 
+  set :public_folder, 'public'
   get '/expense' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
@@ -52,13 +53,35 @@ class ExpenseController < ApplicationController
   post '/expense/:id/edit' do
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
-      @expense = Expense.find(params[:expense_id])
-      @categories = Category.categories_of_user(@sessionName)
       binding.pry
-      erb :'expense/edit', :layout => :layout_loggedin
+      if (!params[:expense_id].nil?)
+        binding.pry
+        @expense = Expense.find(params[:expense_id])
+        @categories = Category.categories_of_user(@sessionName)
+        binding.pry
+        if params[:Button] == "Edit"
+          erb :"expense/#{@id}/edit", :layout => :layout_loggedin
+        elsif params[:Button] == "Delete"
+          erb :"expense/#{@id}/delete", :layout => :layout_loggedin
+        end
+      else
+        flash[:message] = "No Expense Selected"
+        redirect to '/expense/select'
+      end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
+    end
+  end
+
+  get '/expense/:id/delete' do
+    @sessionName = session
+    if Helpers.is_logged_in?(@sessionName)
+      @expense = Expense.find(params[:id])
+      erb :"expense/delete", :layout => :layout_loggedin
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page/"
+      redirect '/'
     end
   end
 
@@ -80,7 +103,7 @@ class ExpenseController < ApplicationController
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
           !params[:expense]["merchant"].empty?)
-          @matched_expense = entry_already_exists?(params[:expense])
+          @matched_expense = entry_valid?(params[:expense])
           if !@matched_expense
             if params[:expense]["date"] > Time.now.to_s(:db)
               flash[:message] = "Invalid date"
@@ -88,9 +111,12 @@ class ExpenseController < ApplicationController
             else
               @expense = Expense.create(params[:expense])
               Expense.all << @expense
-              @expense.save
-              flash[:message] = "Expense added"
-              redirect to "/expense/#{@expense.id}"
+              if @expense.save
+                flash[:message] = "Expense added"
+                redirect to "/expense/#{@expense.id}"
+              else
+                redirect to '/expense/add'
+              end
             end
           else
             flash[:message] = "Already added"
@@ -106,10 +132,23 @@ class ExpenseController < ApplicationController
     end
   end
 
-
+  delete '/expense/:id/delete' do
+    @sessionName = session
+    if Helpers.is_logged_in?(@sessionName)
+      @expense = Expense.find_by_id(params[:id])
+      if @expense
+        @expense.delete
+      end
+      flash[:message] = "Expense Deleted"
+      redirect to '/expense'
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect to '/'
+    end
+  end
 
   helpers do
-    def entry_already_exists?(expense)
+    def entry_valid?(expense)
       binding.pry
       @matched_expense_by_date = Expense.find_by(:date => expense['date'])
       if @matched_expense_by_date.nil?

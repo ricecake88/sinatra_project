@@ -1,6 +1,4 @@
-<html>
 
-<% if Helpers.is_logged_in?(@sessionName) %>
   <p>
   Select an Expense
   </p>
@@ -13,10 +11,8 @@
       <%= expense.merchant %> |
       <%= expense.description %> |
       <%= Category.find(expense.category_id).category_name %>
-      <input type="submit" value="Edit">
+      <input type="submit" name="Button" value="Edit">
+      <input type="submit" name="Button" value="Delete">
     </form>
   </p>
   <% end %>
-</form>
-<% end %>
-</html>
