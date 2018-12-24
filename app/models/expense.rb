@@ -30,5 +30,6 @@ class Expense < ActiveRecord::Base
     end
 
     def self.expense_by_month(month)
+    end
 
 end
