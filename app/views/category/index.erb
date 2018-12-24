@@ -1,9 +1,6 @@
 <p>Manage Categories</p>
 
   <p>Existing Categories</p>
-  <% if flash.has?(:message) %>
-    <%= flash[:message] %>
-  <% end %>
 
   <form method="post" action="/categories/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
@@ -23,3 +20,5 @@
   </p>
   <input type="submit" value="Submit Category">
   </form>
+
+ <p><a href="/categories/show">Delete Categories</a></p>

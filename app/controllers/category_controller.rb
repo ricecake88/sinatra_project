@@ -65,7 +65,7 @@ class CategoryController < ApplicationController
   get '/categories/show' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @categories = Category.all
+      @categories = Category.categories_of_user(@sessionName)
       erb :'/category/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
