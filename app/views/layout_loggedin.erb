@@ -11,14 +11,20 @@
 
   <%= yield %>
 
-  <p>
-  <a href="/account">Home</a> |
-  <a href="/expense">Manage Expenses</a> |
-  <a href="/categories">Manage Categories</a> |
-  <a href="/budgets">Manage Budgets</a>
-  </p>
-
-  <a href="/logout">Log Out</a>
+  <div class="navbar">
+    <a href="/account">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">
+        <a href="/expense">Manage Expenses</a>
+      </button>
+      <div class="dropdown-content">
+          <a href="/expense/add">Add a new expense</a>
+          <a href="/expense/select">Edit expenses</a>
+      </div>
+    </div>
+    <a href="/categories">Manage Categories</a>
+    <a href="/budgets">Manage Budgets</a>
+    <a href="/logout">Log Out</a>
   </div>
 <% end %>
 </body>
