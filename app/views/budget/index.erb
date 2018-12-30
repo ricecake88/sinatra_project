@@ -1,18 +1,33 @@
-  <p>Current Budget Limits:</p>
+  <h1>Current Budget Limits</h1>
 
   <% if @budgets.empty? || @budgets.nil? %>
     <p>
     No Budgets Set<br/>
    </p>
+  <% else %>
+
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Rollover?</th>
+        <th>Edit</th>
+      <tr>
+    <% @budgets.each do |b| %>
+      <%= Category.create_category_if_empty(@sessionName) %>
+      <tr>
+        <td><%= Category.find(b.category_id).category_name %></td>
+        <td><%= b.amount %></td>
+        <td><% if b.rollover %>
+            Yes
+            <% else %>
+            No
+            <% end %>
+          </td>
+        <td><a href="/budgets/<%= b.id %>/edit">Edit</a></td>
+      </tr>
+    <% end %>
+    </table>
   <% end %>
 
-  <% @budgets.each do |b| %>
-  <p>
-    <% Category.create_category_if_empty(@sessionName) %>
-    Category Name: <%= Category.find(b.category_id).category_name %><br/>
-    Category Budget Amount: <%= b.amount %><br/>
-    Rollover This Amount Month to Month: <%= b.rollover %><br/>
-    <a href="/budgets/<%= b.id %>/edit">Edit</a>
-  </p>
-  <% end %>
-  <a href="/budgets/add">Add a budget?</a>
+  <p><a href="/budgets/add">Add a budget?</a></p>
