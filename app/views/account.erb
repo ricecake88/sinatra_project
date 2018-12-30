@@ -1,11 +1,11 @@
   Hello, <%= Helpers.current_user(@sessionName).username %>!
-  <% if !@expenses.empty? %>
+  <% if !@expenses_current_month.empty? %>
     <p>
-      <table width="50%"><tr><td>Date</td><td>Amount</td><td>Merchant</td><td>Description</td><td>Category</td></tr>
-    <% @expenses.each do |expense| %>
+      <table width="50%"><tr><th>Date</th><th>Amount</th><th>Merchant</th><th>Description</th><th>Category</th></tr>
+    <% @expenses_current_month.each do |expense| %>
       <tr>
         <td><%= expense.date %></td>
-        <td><%= expense.amount %></td>
+        <td>$<%= expense.amount %></td>
         <td><%= expense.merchant %></td>
         <td><%= expense.description %></td>
         <td><%= Category.find(expense.category_id).category_name %></td>
@@ -13,7 +13,7 @@
     <% end %>
   </table>
   </p>
-  <p>Total Expenses: <%= Expense.total_expenses_for_user(@expenses) %></p>
+  <p>Total Expenses: $<%= Expense.total_current_month(@sessionName) %></p>
 
   <% categories = Category.categories_of_user(@sessionName) %>
     <table><tr><td>Category</td><td>Total Expenses</td><td>Budget Goal</td><td>Amount remaining</td></tr>
@@ -27,8 +27,11 @@
       <td><%= total %></td>
       <% budget = Budget.find_by(:category_id => cat.id) %>
       <% if !budget.nil? %>
-      <td><%= budget.amount %></td>
-      <td><%= budget.amount - total %></td>
+        <td><%= budget.amount %></td>
+        <td><%= budget.amount - total %></td>
+      <% else %>
+        <td> 0 </td>
+        <td> 0 </td>
       <% end %>
     </tr>
     <% end %>
