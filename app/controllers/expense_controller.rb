@@ -53,12 +53,9 @@ class ExpenseController < ApplicationController
   post '/expense/:id/edit' do
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
-      binding.pry
       if (!params[:expense_id].nil?)
-        binding.pry
         @expense = Expense.find(params[:expense_id])
         @categories = Category.categories_of_user(@sessionName)
-        binding.pry
         if params[:Button] == "Edit"
           erb :"expense/#{@id}/edit", :layout => :layout_loggedin
         elsif params[:Button] == "Delete"
