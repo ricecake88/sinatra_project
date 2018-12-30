@@ -27,10 +27,8 @@ class Expense < ActiveRecord::Base
     end
 
     def self.expenses_last_30_days(sessionName)
-      @expenses = Expense.expenses_for_user(sessionName).order(date: :desc)
-    end
-
-    def self.expense_by_month(month)
+      expenses = Expense.expenses_for_user(sessionName).take(30)
+      return expenses
     end
 
     def self.expenses_current_month(desired_year, desired_month, sessionName)

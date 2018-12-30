@@ -8,7 +8,7 @@ class ExpenseController < ApplicationController
   get '/expense' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @expenses = Expense.expenses_for_user(@sessionName)
+      @expenses = Expense.expenses_last_30_days(@sessionName)
       erb :'expense/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
