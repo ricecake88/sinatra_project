@@ -1,11 +1,11 @@
-  <p>Enter an Expense</p>
+  <p id="head-title">Enter an Expense</p>
 
   <p>
-    <div id="error">
-  <% if flash.has?(:message) %>
-    <%= flash[:message] %>
-  <% end %>
-    </div>
+  <div id="flash_message">
+    <% if flash.has?(:message) %>
+      <%= flash[:message] %>
+    <% end %>
+  </div>
   </p>
 
   <form method="post" action="/expense/add">
@@ -30,7 +30,7 @@
   <input type="text" name="expense[merchant]">
 
   <p>
-  <input type="submit" value="Enter Expense"><br/>
+  <input type="submit" value="Submit"><br/>
   </p>
 
   </form>
