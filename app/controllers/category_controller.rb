@@ -77,17 +77,21 @@ class CategoryController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @categories = params[:category]
-      @categories.each do |cat|
-        category = Category.find(cat["id"])
-        if !category.nil?
-          category.delete
+      if !@categories.nil?
+        @categories.each do |cat|
+          category = Category.find(cat["id"])
+          if !category.nil?
+            category.delete
+          end
         end
+      else
+        flash[:message] = "No categories selected."
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
-    redirect to '/categories'
+    redirect to '/categories/show'
   end
 
   helpers do
