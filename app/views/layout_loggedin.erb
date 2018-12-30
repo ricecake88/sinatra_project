@@ -4,27 +4,45 @@
 </head>
 <body>
 <% if Helpers.is_logged_in?(@sessionName) %>
-  <div id="text-layer">
-  <% if flash.has?(:message) %>
-    <div id="flash_message"><%= flash[:message] %></div>
-  <% end %>
 
-  <%= yield %>
-
-  <div class="navbar">
-    <a href="/account">Home</a>
-    <div class="dropdown">
-      <button class="dropbtn">
-        <a href="/expense">Manage Expenses</a>
-      </button>
-      <div class="dropdown-content">
-          <a href="/expense/add">Add a new expense</a>
-          <a href="/expense/select">Edit expenses</a>
+  <div id="content">
+    <div class="navbar">
+      <a href="/account">Home</a>
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/expense">Manage Expenses</a>
+        </button>
+        <div class="dropdown-content">
+            <a href="/expense/add">Add a new expense</a>
+            <a href="/expense/select">Edit expenses</a>
+        </div>
       </div>
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/categories">Manage Categories</a>
+        </button>
+        <div class="dropdown-content">
+          <a href="/categories/show">Delete Categories</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/budgets">Manage Budgets</a>
+        </button>
+        <div class="dropdown-content">
+          <a href="/budgets/add">Add a budget</a>
+        </div>
+      </div>
+      <a href="/logout">Log Out</a>
     </div>
-    <a href="/categories">Manage Categories</a>
-    <a href="/budgets">Manage Budgets</a>
-    <a href="/logout">Log Out</a>
+
+    <% if flash.has?(:message) %>
+      <p id="flash_message"><%= flash[:message] %></p>
+    <% end %>
+
+    <div class="text">
+      <%= yield %>
+    </div>
   </div>
 <% end %>
 </body>
