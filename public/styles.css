@@ -9,8 +9,8 @@ body {
 margin: 0px 0px 0px 200px;
 }
 
-#head-title {
-  font-family: Times New Roman, Serif;
+h1 {
+  font-family: "Times New Roman", Sans-Serif;
   font-weight: bold;
   font-size: 22px;
 }
