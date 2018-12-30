@@ -8,8 +8,8 @@
     <input type="number" step="any" name="amount" value="<%= @budget.amount %>"><br/>
 
     <label for="rollover">Rollover?<label>
-    <input type="radio" name="rollover" value=True <% "checked" if @budget.rollover %>>Yes
-    <input type="radio" name="rollover" value=False <% "checked" if !@budget.rollover %>>No<br/>
+    <input type="radio" name="rollover" value="True" <%= "checked" if @budget.rollover %>>Yes
+    <input type="radio" name="rollover" value="False" <%= "checked" if !@budget.rollover %>>No<br/>
 
     <input type="submit" value="Update">
   </form>
