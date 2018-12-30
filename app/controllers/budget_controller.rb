@@ -55,11 +55,6 @@ class BudgetController < ApplicationController
         flash[:message] = "OOPS, already set a budget for this category. "
         redirect to "/budgets"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
-        if params[:budget]["rollover"] == "True"
-          rollover = true
-        else
-          rollover = false
-        end
         @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         Budget.all << @budget
         @budget.save
