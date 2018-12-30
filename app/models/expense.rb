@@ -54,6 +54,7 @@ class Expense < ActiveRecord::Base
         year = current_year - 1
       else
         month = Helpers.current_month - 1
+        year = current_year
       end
       expenses_previous_month = Expense.where("cast(strftime('%m', date) as int) = ? and cast(strftime('%Y', date) as int) = ?", month, year).order(date: :asc)
       expenses_by_user = Expense.expenses_for_user(sessionName)
