@@ -18,14 +18,14 @@ class Budget < ActiveRecord::Base
       budget = Budget.find_by(:category_id => category_id)
       total_curr_month = Expense.total_current_month_by_category(sessionName, category_id)
       total_prev_month = Expense.total_previous_month_by_category(sessionName, category_id)
-      leftover = 0
-      curr_leftover = 0
-      amount = 0
+      leftover = 0.0
+      curr_leftover = 0.0
+      amount = 0.0
       if !budget.nil?
         amount = budget.amount
         if budget.rollover
           leftover = budget.amount - total_prev_month
-          if leftover > budget.amount
+          if leftover > 0
             curr_leftover = budget.amount - total_curr_month + leftover
           end
         else
