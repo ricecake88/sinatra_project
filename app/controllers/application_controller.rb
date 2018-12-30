@@ -53,9 +53,10 @@ class ApplicationController < Sinatra::Base
   get '/account' do
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
-      @user = Helpers.current_user(@sessionName)
-      @expenses = Expense.expenses_for_user(@sessionName)
+      #@user = Helpers.current_user(@sessionName)
+      #@expenses = Expense.expenses_for_user(@sessionName)
       @expenses_current_month = Expense.expenses_current_month(Helpers.current_year, Helpers.current_month, @sessionName)
+      binding.pry
       erb :account, :layout => :layout_loggedin
     else
       flash[:message] = "Sorry you are not logged in."

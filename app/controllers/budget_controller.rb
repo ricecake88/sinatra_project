@@ -56,11 +56,10 @@ class BudgetController < ApplicationController
         redirect to "/budgets"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
         if params[:budget]["rollover"] == "True"
-          rollover = True
+          rollover = true
         else
-          rollover = False
+          rollover = false
         end
-        binding.pry
         @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         Budget.all << @budget
         @budget.save
@@ -78,7 +77,6 @@ class BudgetController < ApplicationController
 patch '/budgets/:id/edit' do
   @sessionName = session
   if Helpers.is_logged_in?(session)
-    binding.pry
     @budget = Budget.find(params[:id])
     @budget.update(:amount => params[:amount], :rollover => params[:rollover])
     @budget.save
