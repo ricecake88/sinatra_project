@@ -35,22 +35,3 @@
     </table>
 
   <% end %>
-
-  <p>Current month</p>
-  <% if !@expenses_current_month.empty? %>
-    <% @expenses_current_month.each do |e| %>
-    <p>
-      <table width="50%"><tr><td>Date</td><td>Amount</td><td>Merchant</td><td>Description</td><td>Category</td></tr>
-    <% @expenses.each do |expense| %>
-      <tr>
-        <td><%= expense.date %></td>
-        <td><%= expense.amount %></td>
-        <td><%= expense.merchant %></td>
-        <td><%= expense.description %></td>
-        <td><%= Category.find(expense.category_id).category_name %></td>
-      </tr>
-    <% end %>
-  </table>
-  </p>
-    <% end %>
-  <% end %>
