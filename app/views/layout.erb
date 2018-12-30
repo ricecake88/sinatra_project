@@ -4,14 +4,16 @@
 </head>
 <body>
 
+  <div id="content">
+    <h1>Welcome to PiggyEasyBudget!</h1>
 
-<div id="text-layer">
-  <% if flash.has?(:message) %>
-    <div id="flash_message"><%= flash[:message] %></div>
-  <% end %>
+    <% if flash.has?(:message) %>
+      <p id="flash_message"><%= flash[:message] %></p>
+    <% end %>
 
-  <%= yield %>
-</div>
-
+    <div class="text">
+      <%= yield %>
+    </div>
+  </div>
 </body>
 </html>
