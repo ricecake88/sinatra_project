@@ -8,7 +8,7 @@ class ExpenseController < ApplicationController
   get '/expense' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @expenses = Expense.expenses_last_30_days(@sessionName)
+      @expenses = Expense.expenses_last_x_days(@sessionName, 30)
       erb :'expense/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -33,6 +33,17 @@ class ExpenseController < ApplicationController
       erb :'expense/select', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
+      redirect '/'
+    end
+  end
+
+  get '/expense/display/:num' do
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      @expenses = Expense.expenses_last_x_days(@sessionName, params[:num].to_i)
+      erb :'expense/index', :layout => :layout_loggedin
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
   end
@@ -91,6 +102,17 @@ class ExpenseController < ApplicationController
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
     end
+  end
+
+  post '/expense' do
+    @sessionName = session
+    if Helpers.is_logged_in?(@sessionName)
+      @num_days = params[:num_days]
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect to '/'
+    end
+    redirect to "/expense/display/#{@num_days}"
   end
 
   post '/expense/add' do

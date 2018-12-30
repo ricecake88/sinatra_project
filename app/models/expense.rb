@@ -26,8 +26,8 @@ class Expense < ActiveRecord::Base
       @expenses = Expense.where(:category_id => category_id).order(date: :desc)
     end
 
-    def self.expenses_last_30_days(sessionName)
-      expenses = Expense.expenses_for_user(sessionName).take(30)
+    def self.expenses_last_x_days(sessionName, limit_days)
+      expenses = Expense.expenses_for_user(sessionName).last(limit_days)
       return expenses
     end
 

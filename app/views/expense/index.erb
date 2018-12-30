@@ -1,4 +1,14 @@
-  <h1>Expenses (Last 30)</h1>
+  <h1>Expenses</h1>
+
+  <form method="post" action="/expense">
+    <select name="num_days">
+      <option value="10">Last 10 Days</option>
+      <option value="30">Last 30 Days</option>
+      <option value="50">Last 50 Days</option>
+      <option value="100">Last 100 Days</option>
+    </select>
+    <input type="submit" name="Submit">
+  </form>
 
   <% if !@expenses.nil? %>
     <table>
