@@ -149,16 +149,15 @@ class ExpenseController < ApplicationController
 
   helpers do
     def entry_valid?(expense)
-      binding.pry
       @matched_expense_by_date = Expense.find_by(:date => expense['date'])
       if @matched_expense_by_date.nil?
         return false
-      elsif (@matched_expense_by_date["merchant"] == expense["merchant"] &&
+      end
+      if !(@matched_expense_by_date["merchant"] == expense["merchant"] ||
           @matched_expense_by_date["amount"].to_f == expense["amount"].to_f)
-        return true
-      else
         return false
       end
+      return true
     end
   end
 end
