@@ -1,4 +1,4 @@
- <p>Edit a budget</p>
+ <h1>Edit a budget</h1>
 
   <form method="post" action="/budgets/<%= @budget.id %>/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
@@ -8,8 +8,8 @@
     <input type="number" step="any" name="amount" value="<%= @budget.amount %>"><br/>
 
     <label for="rollover">Rollover?<label>
-    <input type="radio" name="rollover" value="True" <%= "checked" if @budget.rollover %>>Yes
-    <input type="radio" name="rollover" value="False" <%= "checked" if !@budget.rollover %>>No<br/>
+    <input type="radio" name="rollover" value=true <%= "checked" if @budget.rollover %>>Yes
+    <input type="radio" name="rollover" value=false <%= "checked" if !@budget.rollover %>>No<br/>
 
     <input type="submit" value="Update">
   </form>
