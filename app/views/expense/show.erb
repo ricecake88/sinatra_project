@@ -1,13 +1,6 @@
-<html>
-
-<% if Helpers.is_logged_in?(@sessionName) %>
-
-  <p>Expense Added</p>
+  <p id="head-title">Expense Added</p>
   <%= @expense.amount %><br/>
   <%= @expense.date %><br/>
   <%= @expense.description %><br/>
   <%= @expense.merchant %><br/>
   <a href="/expense">View all Expenses</a>
-
-<% end %>
-</html>

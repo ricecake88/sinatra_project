@@ -1,18 +1,29 @@
-  <p>
-  All Expenses:
-  </p>
+  <p id="head-title">All Expenses</p>
 
   <% if !@expenses.nil? %>
-    <% @expenses.each do |expense| %>
-    <p>
-        <%= expense.date %> |
-        <%= expense.amount %> |
-        <%= expense.merchant %> |
-        <%= expense.description %> |
-        <%= Category.find(expense.category_id).category_name %>
-    </p>
-    <% end %>
-
+    <table>
+      <colgroup>
+        <col span="5">
+      </colgroup>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Merchant</th>
+        <th>Description</th>
+        <th>Category</th>
+      </tr>
+      <% @expenses.each do |expense| %>
+          <tr>
+            <td><%= expense.date %></td>
+            <td><%= expense.amount %></td>
+            <td><%= expense.merchant %></td>
+            <td><%= expense.description %></td>
+            <td><%= Category.find(expense.category_id).category_name %></td>
+         </tr>
+      <% end %>
+    </table>
   <% end %>
 
-  <a href="/expense/add">Add a new expense</a> | <a href="/expense/select">Edit expenses</a>
+  <p>
+    <a href="/expense/add">Add a new expense</a> | <a href="/expense/select">Edit expenses</a>
+  </p>
