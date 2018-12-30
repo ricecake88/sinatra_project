@@ -9,32 +9,41 @@ body {
 margin: 0px 0px 0px 200px;
 }
 
-#text-layer {
+#head-title {
+  font-family: Times New Roman, Serif;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+#content {
   background-color: white;
   position: relative;
   align:middle;
-  width:75%;
-  border: 0;
-  padding: 4px;
-  margin: 0;
+  width:80%;
   text-align: left;
 }
 
 #flash_message {
   font-style: italic;
+  color: red;
+  position: relative;
+  margin: 5pt;
 }
 
 .navbar {
   overflow: hidden;
   background-color: grey;
   font-family: Arial;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
 }
 
 .navbar a {
   float: left;
   font-size: 16px;
   color: white;
-  text-align: center;
+  text-align: left;
   padding: 14px 16px;
   text-decoration: none;
 }
@@ -50,14 +59,14 @@ margin: 0px 0px 0px 200px;
   border: none;
   outline: none;
   color: white;
-  /*padding: 14px 16px;*/
   background-color: inherit;
   font-family: inherit; /* Important for vertical align on mobile phones */
   margin: 0; /* Important for vertical align on mobile phones */
+  padding: 0px;
 }
 
 .navbar a:hover, .dropdown:hover {
-  background-color: red;
+  background-color: blue;
 }
 
 .dropdown-content {
@@ -65,6 +74,8 @@ margin: 0px 0px 0px 200px;
   position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
+  padding: 0px;
+  margin: 0px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
@@ -72,7 +83,7 @@ margin: 0px 0px 0px 200px;
 .dropdown-content a {
   float: none;
   color: black;
-  padding: 12px 16px;
+  padding: 10px 10px;
   text-decoration: none;
   display: block;
   text-align: left;
@@ -85,3 +96,32 @@ margin: 0px 0px 0px 200px;
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+.text {
+  padding: 5px;
+  position: relative;
+}
+
+
+/* Used to display tables for data expenses */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  text-align: left;
+  padding: 8px;
+  background-color: blue;
+}
+
+td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+tr:hover {background-color: #ddd;}
