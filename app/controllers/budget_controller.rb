@@ -76,16 +76,30 @@ class BudgetController < ApplicationController
 patch '/budgets/:id/edit' do
   @sessionName = session
   if Helpers.is_logged_in?(session)
-    @budget = Budget.find(params[:id])
-    @budget.update(:amount => params[:amount], :rollover => params[:rollover])
-    @budget.save
-    redirect to '/budgets'
+      @budget = Budget.find(params[:id])
+      @budget.update(:amount => params[:amount], :rollover => params[:rollover])
+      @budget.save
+      redirect to '/budgets'
   else
     flash[:message] = "Illegal action. Please log-in to access this page."
     erb :'/'
   end
 end
 
+delete '/budgets/:id/delete' do
+  @sessionName = session
+  if Helpers.is_logged_in?(@sessionName)
+    @budget = Budget.find(params[:id])
+    if @budget
+      @budget.delete
+    end
+    flash[:message] = "Budget Deleted"
+    redirect to '/budgets'
+  else
+    flash[:message] = "Illegal action. Please log-in to access this page."
+    redirect to '/'
+  end
+end
 
   helpers do
     def cat_exists?(cat_id)

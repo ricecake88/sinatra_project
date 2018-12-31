@@ -11,5 +11,10 @@
     <input type="radio" name="rollover" value=true <%= "checked" if @budget.rollover %>>Yes
     <input type="radio" name="rollover" value=false <%= "checked" if !@budget.rollover %>>No<br/>
 
-    <input type="submit" value="Update">
+    <input type="submit" value="Update" name="Submit">
+  </form>
+
+  <form method="post" action="/budgets/<%=@budget.id%>/delete">
+    <input id="hidden" type="hidden" name="_method" value="DELETE">
+    or <input type="submit" value="Delete Budget">
   </form>
