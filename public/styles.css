@@ -10,7 +10,7 @@ margin: 0px 0px 0px 200px;
 }
 
 h1 {
-  font-family: "Times New Roman", Sans-Serif;
+  font-family: "Helvetica", Sans-Serif;
   font-weight: bold;
   font-size: 22px;
 }
@@ -35,7 +35,7 @@ h1 {
   background-color: #656566;
   font-family: Arial;
   margin: 0;
-  overflow: hidden;
+  width: 100%
   box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
 }
 
