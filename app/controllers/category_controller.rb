@@ -25,16 +25,20 @@ class CategoryController < ApplicationController
   patch '/categories/edit' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @categories = params[:category]
-      @categories.each do |cat|
-        category = Category.find(cat["id"])
-        if !category.nil?
-          if cat["name"] != category.category_name
-            category.update(:category_name => cat["name"])
-            category.save
-            flash[:message] = "Modified category"
+      if !params[:category].nil?
+        @categories = params[:category]
+        @categories.each do |cat|
+          category = Category.find(cat["id"])
+          if !category.nil?
+            if cat["name"] != category.category_name
+              category.update(:category_name => cat["name"])
+              category.save
+              flash[:message] = "Modified category"
+            end
           end
         end
+      else
+        flash[:message] = "No category modified, missing category data."
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -80,6 +84,8 @@ class CategoryController < ApplicationController
       @categories = params[:category]
       if !@categories.nil?
         @categories.each do |cat|
+          expenses_current_category = Expense.expenses_by_user_category(session, cat["id"])
+          set_category_to_default(expenses_current_category)
           category = Category.find(cat["id"])
           if !category.nil?
             category.delete
@@ -103,6 +109,23 @@ class CategoryController < ApplicationController
         return true
       end
       return false
+    end
+
+    def set_category_to_default(expenses)
+      @categories = Category.categories_of_user(session)
+      default_user_category_id = 0
+      @categories.each do |cat|
+        if cat.category_name == "Expenses"
+          default_user_category_id = cat.id
+        end
+      end
+      expenses.each do |expense|
+        expense_row = Expense.find(expense.id)
+        expense_row.update(:category_id => default_user_category_id)
+        expense_row.save
+      end
+
+      binding.pry
     end
   end
 end
