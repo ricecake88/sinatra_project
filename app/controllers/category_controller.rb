@@ -99,7 +99,7 @@ class CategoryController < ApplicationController
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
-    redirect to '/categories/show'
+    redirect to '/categories'
   end
 
   helpers do
@@ -125,8 +125,6 @@ class CategoryController < ApplicationController
         expense_row.update(:category_id => default_user_category_id)
         expense_row.save
       end
-
-      binding.pry
     end
   end
 end
