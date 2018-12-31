@@ -1,10 +1,6 @@
 
 <h2>Sign-up</h2>
 
-<% if flash.has?(:message) %>
-  <%= flash[:message] %>
-<% end %>
-
 <form method="post" action="/signup">
   Username: <input type="username" name="username" placeholder="Username"><br/>
   Password: <input type="password" name="password" placeholder="Password"><br/>
