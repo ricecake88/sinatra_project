@@ -1,23 +1,29 @@
   <h1>Manage Categories</h1>
 
-  <p>Existing Categories</p>
+  <p><b>Existing Categories</b></p>
 
   <form method="post" action="/categories/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
-  <% @categories.each do |cat|%>
-      <input type="hidden" name="category[][id]" value="<%= cat.id %>">
-      <input type="text" name="category[][name]" value="<%= cat.category_name %>"><br/>
-  <% end %>
-      <input type="submit" value="Modify Categories">
+    <p>
+    <% @categories.each do |cat|%>
+      <% if cat.category_name == "Expenses" %>
+        <span style="color:gray">Expenses (Default)</span><br/>
+      <% else %>
+        <input type="hidden" name="category[][id]" value="<%= cat.id %>">
+        <input type="text" name="category[][name]" value="<%= cat.category_name %>"><br/>
+      <% end %>
+    <% end %>
+    </p>
+    <p><input type="submit" value="Modify Categories"></p>
   </form>
 
-  <p>Add a Category</p>
+  <p><b>Add a Category</b></p>
   <form method="post" action="/categories/add">
   <p>
   <label for="category_name">Category Name</label><br/>
   <input type="text" name="category_name"><br/>
   </p>
-  <input type="submit" value="Submit Category">
+  <p><input type="submit" value="Submit Category"></p>
   </form>
 
  <p><a href="/categories/show">Delete Categories</a></p>
