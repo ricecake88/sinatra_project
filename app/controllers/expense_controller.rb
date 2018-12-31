@@ -55,6 +55,7 @@ class ExpenseController < ApplicationController
       @expense = Expense.find(params[:id])
       @expense.update(params[:expense])
       @expense.save
+      flash[:message] = "Expense Updated"
       redirect to "/expense/#{@expense.id}"
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -169,12 +170,13 @@ class ExpenseController < ApplicationController
 
   helpers do
     def entry_valid?(expense)
-      @matched_expense_by_date = Expense.find_by(:date => expense['date'])
+      @matched_expense_by_date = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'])
       if @matched_expense_by_date.nil?
         return false
       end
       if !(@matched_expense_by_date["merchant"] == expense["merchant"] ||
-          @matched_expense_by_date["amount"].to_f == expense["amount"].to_f)
+          @matched_expense_by_date["amount"].to_d == expense["amount"].to_d ||
+          @matched_expense_by_date["description"] == expense["description"])
         return false
       end
       return true
