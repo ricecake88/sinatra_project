@@ -1,4 +1,6 @@
-<h1>Budget Added</h1>
+<h1>Budget Details</h1>
 
-  <%= Category.find(@budget.category_id).category_name %>
-  <%= @budget.amount %>
+  <p>
+  <b>Category</b>: <%= Category.find(@budget.category_id).category_name %><br/>
+  <b>Budget Amount</b>: $<%= '%.2f' % @budget.amount %><br/>
+  </p>

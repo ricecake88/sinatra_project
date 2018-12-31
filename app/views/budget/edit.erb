@@ -1,11 +1,11 @@
- <h1>Edit a budget</h1>
+ <h1>Edit A Monthly Budget</h1>
 
   <form method="post" action="/budgets/<%= @budget.id %>/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
     You are editing the budget for '<%= Category.find(@budget.category_id).category_name %>'<br/>
 
     <label for="amount">Amount:</label>
-    <input type="number" step="any" name="amount" value="<%= @budget.amount %>"><br/>
+    $<input type="number" step="any" name="amount" value="<%= '%.2f' % @budget.amount %>"><br/>
 
     <label for="rollover">Rollover?<label>
     <input type="radio" name="rollover" value=true <%= "checked" if @budget.rollover %>>Yes

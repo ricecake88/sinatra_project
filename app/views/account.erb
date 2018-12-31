@@ -5,14 +5,14 @@
       <% @expenses_current_month.each do |expense| %>
         <tr>
           <td><%= expense.date %></td>
-          <td>$<%= expense.amount %></td>
+          <td>$<%= '%.2f' % expense.amount %></td>
           <td><%= expense.merchant %></td>
           <td><%= expense.description %></td>
           <td><%= Category.find(expense.category_id).category_name %></td>
         </tr>
       <% end %>
     </table>
-    <p>Total Expenses: $<%= Expense.total_current_month(@sessionName) %></p>
+    <p><b>Total Expenses: $<%= Expense.total_current_month(@sessionName) %></b></p>
   <% else %>
     <p>No Expenses entered for this month</p>
   <% end %>
@@ -33,13 +33,13 @@
       <% budget_hash = Budget.surplus_for_category(@sessionName, cat.id) %>
       <tr>
         <td><%= cat.category_name %></td>
-        <td><%= budget_hash[:total_curr_month] %></td>
-        <td><%= budget_hash[:budget] %></td>
-        <td><%= budget_hash[:leftover] %></td>
+        <td>$<%= '%.2f' % budget_hash[:total_curr_month] %></td>
+        <td>$<%= '%.2f' % budget_hash[:budget] %></td>
+        <td>$<%= '%.2f' % budget_hash[:leftover] %></td>
         <% if budget_hash[:current_leftover] < 0 %>
-          <td><span style="color:red"><%= budget_hash[:current_leftover] %></span></td>
+          <td><span style="color:red">$<%= '%.2f' % budget_hash[:current_leftover] %></span></td>
         <% else %>
-          <td><%= budget_hash[:current_leftover] %></td>
+          <td>$<%= '%.2f' % budget_hash[:current_leftover] %></td>
         <% end %>
       </tr>
     <% end %>
