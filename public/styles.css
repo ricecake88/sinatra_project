@@ -23,6 +23,13 @@ h1 {
   text-align: left;
 }
 
+#greeting {
+  font-size:20px;
+  font-style: italic;
+  font-family: "Helvetica", Sans-Serif;
+  color: #a51f5e;
+}
+
 #flash_message {
   font-style: italic;
   color: red;
