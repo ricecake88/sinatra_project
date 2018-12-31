@@ -1,9 +1,5 @@
   <h1>Enter an Expense</h1>
 
-  <% if flash.has?(:message) %>
-    <p id="flash_message"><%= flash[:message] %></p>
-  <% end %>
-
   <form method="post" action="/expense/add">
   <label for="expense[date]">Expense Date:</label>
   <input type="date" name="expense[date]"><br/>
