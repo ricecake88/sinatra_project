@@ -14,6 +14,7 @@ class CategoryController < ApplicationController
         if cat.user_id == user_id
           @categories << cat
         end
+        @categories.sort_by!{ |c| c.category_name.downcase }
       end
       erb :'category/index', :layout => :layout_loggedin
     else
