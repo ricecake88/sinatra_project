@@ -62,7 +62,7 @@ class ApplicationController < Sinatra::Base
       erb :account, :layout => :layout_loggedin
     else
       flash[:message] = "Sorry you are not logged in."
-      redirect '/login'
+      redirect '/'
     end
   end
 

@@ -11,7 +11,7 @@ class BudgetController < ApplicationController
       erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      erb :'/'
+      redirect '/'
     end
 
   end
@@ -23,7 +23,7 @@ class BudgetController < ApplicationController
       erb :'/budget/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      erb :'/'
+      redirect '/'
     end
   end
 
@@ -34,7 +34,7 @@ class BudgetController < ApplicationController
       erb :'/budget/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      erb :'/'
+      redirect '/'
     end
   end
 
@@ -45,7 +45,7 @@ class BudgetController < ApplicationController
       erb :'/budget/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
-      erb :'/'
+      redirect '/'
     end
   end
 
@@ -82,7 +82,7 @@ patch '/budgets/:id/edit' do
       redirect to '/budgets'
   else
     flash[:message] = "Illegal action. Please log-in to access this page."
-    erb :'/'
+    redirect '/'
   end
 end
 
