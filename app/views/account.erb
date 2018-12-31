@@ -1,8 +1,7 @@
-  Hello, <%= Helpers.current_user(@sessionName).username %>!
+<p id="greeting">Hello, <%= Helpers.current_user(@sessionName).username %>!</p>
+  <h2>Current Month Expenses</h2>
   <% if !@expenses_current_month.empty? %>
-    <h2>Current Month Expenses</h2>
-
-      <table width="50%"><tr><th>Date</th><th>Amount</th><th>Merchant</th><th>Description</th><th>Category</th></tr>
+    <table width="50%"><tr><th>Date</th><th>Amount</th><th>Merchant</th><th>Description</th><th>Category</th></tr>
       <% @expenses_current_month.each do |expense| %>
         <tr>
           <td><%= expense.date %></td>
@@ -13,12 +12,15 @@
         </tr>
       <% end %>
     </table>
-    </p>
     <p>Total Expenses: $<%= Expense.total_current_month(@sessionName) %></p>
+  <% else %>
+    <p>No Expenses entered for this month</p>
+  <% end %>
 
-    <h2>Budget Tracking</h2>
+  <h2>Budget Tracking</h2>
 
-    <% categories = Category.categories_of_user(@sessionName) %>
+  <% categories = Category.categories_of_user(@sessionName) %>
+  <% if !categories.empty? %>
     <table>
       <tr>
         <th>Category</th>
@@ -42,4 +44,4 @@
       </tr>
     <% end %>
     </table>
-<% end %>
+  <% end %>
