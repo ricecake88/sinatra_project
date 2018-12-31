@@ -19,6 +19,7 @@ class ExpenseController < ApplicationController
   get '/expense/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      Category.create_category_if_empty(@sessionName)
       erb :'expense/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."

@@ -15,7 +15,6 @@
   <input type="text" name="expense[description]"><br/>
 
   <label for="expense[category_id]">Category</label>
-  <% Category.create_category_if_empty(@sessionName) %>
   <select name="expense[category_id]">
   <% Category.categories_of_user(@sessionName).each do |cat| %>
     <option value="<%= cat.id %>"><%= cat.category_name %></option>

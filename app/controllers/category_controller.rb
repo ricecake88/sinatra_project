@@ -9,6 +9,7 @@ class CategoryController < ApplicationController
     @categories = []
     if Helpers.is_logged_in?(session)
       user_id = Helpers.current_user(session).id
+      Category.create_category_if_empty(@sessionName)
       Category.all.each do |cat|
         if cat.user_id == user_id
           @categories << cat

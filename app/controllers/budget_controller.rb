@@ -19,6 +19,7 @@ class BudgetController < ApplicationController
   get '/budgets/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      Category.create_category_if_empty(@sessionName)
       erb :'/budget/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
