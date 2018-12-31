@@ -25,7 +25,7 @@
       <% @expenses.each do |expense| %>
           <tr>
             <td><%= expense.date %></td>
-            <td><%= expense.amount %></td>
+            <td>$<%= '%.2f' % expense.amount %></td>
             <td><%= expense.merchant %></td>
             <td><%= expense.description %></td>
             <td><%= Category.find(expense.category_id).category_name %></td>
