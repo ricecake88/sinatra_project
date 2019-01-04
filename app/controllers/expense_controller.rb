@@ -133,6 +133,9 @@ class ExpenseController < ApplicationController
               @expense = Expense.create(params[:expense])
               Expense.all << @expense
               if @expense.save
+                user_expense = UserExpense.create(:expense_id => @expense.id, :user_id => session[:user_id])
+                UserExpense.all << user_expense
+                user_expense.save
                 flash[:message] = "Expense added"
                 redirect to "/expense/#{@expense.id}"
               else
