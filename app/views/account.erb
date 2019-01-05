@@ -1,4 +1,4 @@
-<p id="greeting">Hello, <%= Helpers.current_user(@sessionName).username %>!</p>
+<p id="greeting">Hello, <%= @user.username %>!</p>
   <h2>Current Month Expenses</h2>
   <% if !@expenses_current_month.empty? %>
     <table width="50%"><tr><th>Date</th><th>Amount</th><th>Merchant</th><th>Description</th><th>Category</th></tr>
@@ -8,19 +8,18 @@
           <td>$<%= '%.2f' % expense.amount %></td>
           <td><%= expense.merchant %></td>
           <td><%= expense.description %></td>
-          <td><%= Category.find(expense.category_id).category_name %></td>
+          <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
         </tr>
       <% end %>
     </table>
-    <p><b>Total Expenses: $<%= Expense.total_current_month(@sessionName) %></b></p>
+    <p><b>Total Expenses: $<%= @total_month_expense %></b></p>
   <% else %>
     <p>No Expenses entered for this month</p>
   <% end %>
 
   <h2>Current Month - Budget Tracking</h2>
 
-  <% categories = Helpers.current_user(@sessionName).categories %>
-  <% if !categories.empty? %>
+  <% if !@categories.empty? %>
     <table>
       <tr>
         <th>Category</th>
@@ -29,10 +28,9 @@
         <th>Last Month Surplus</th>
         <th>Amount remaining</th>
      </tr>
-    <% categories.each do |cat| %>
-      <% budget_hash = Budget.surplus_for_category(@sessionName, cat.id) %>
+    <% @budget_hashes.each do |budget_hash| %>
       <tr>
-        <td><%= cat.category_name %></td>
+        <td><%= @categories.find {|cat| cat.id == budget_hash[:cat_id]}.category_name %></td>
         <td>$<%= '%.2f' % budget_hash[:total_curr_month] %></td>
         <td>$<%= '%.2f' % budget_hash[:budget] %></td>
         <td>$<%= '%.2f' % budget_hash[:leftover] %></td>

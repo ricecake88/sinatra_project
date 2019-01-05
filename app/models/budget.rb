@@ -20,6 +20,7 @@ class Budget < ActiveRecord::Base
           curr_leftover = budget.amount - total_curr_month
         end
       end
-      return {"budget": amount, "total_curr_month": total_curr_month, "total_prev_month": total_prev_month, "leftover": leftover, "current_leftover": curr_leftover}
+      return {"cat_id": category_id, "budget": amount, "total_curr_month": total_curr_month, "total_prev_month": total_prev_month, "leftover": leftover, "current_leftover": curr_leftover}
     end
+
 end
