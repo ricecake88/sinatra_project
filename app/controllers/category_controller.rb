@@ -9,8 +9,7 @@ class CategoryController < ApplicationController
     @categories = []
     if Helpers.is_logged_in?(session)
       Category.create_category_if_empty(@sessionName)
-      @categories = Helpers.current_user(@sessionName).categories
-      @categories = @categories.sort_by &:category_name
+      @categories = Category.sort_categories(@sessionName)
       erb :'category/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -49,13 +48,14 @@ class CategoryController < ApplicationController
       if !params[:category_name].empty?
         if !exists_already?(params[:name])
           name = params[:category_name]
-          user = Helpers.current_user(@sessionName)
+          user = Helpers.current_user(session)
           user_category = Category.new(:category_name => params[:category_name])
           user_category.user = user
-          #user.categories << user_category
-          Category.all << user_category
-          user_category.save
-          flash[:message] = "Added category!"
+          if user_category.save
+            user.categories << user_category
+            Category.all << user_category
+            flash[:message] = "Added category!"
+          end
         else
           flash[:message] = "Error, category already exists"
         end
