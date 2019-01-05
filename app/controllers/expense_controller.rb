@@ -8,7 +8,8 @@ class ExpenseController < ApplicationController
   get '/expense' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @expenses = Expense.expenses_last_x_days(@sessionName, 30)
+      user = Helpers.current_user(@sessionName)
+      @expenses = user.expenses.sort_by(&:date).last(30)
       erb :'expense/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -41,7 +42,8 @@ class ExpenseController < ApplicationController
   get '/expense/display/:num' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @expenses = Expense.expenses_last_x_days(@sessionName, params[:num].to_i)
+      user = Helpers.current_user(@sessionName)
+      @expenses = user.expenses.sort_by(&:date).last(params[:num].to_i)
       erb :'expense/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -130,12 +132,11 @@ class ExpenseController < ApplicationController
               flash[:message] = "Invalid date"
               redirect to '/expense/add'
             else
-              @expense = Expense.create(params[:expense])
-              Expense.all << @expense
+              @expense = Expense.new(params[:expense])
+              user = Helpers.current_user(@sessionName)
+              user.expenses << @expense
               if @expense.save
-                user_expense = UserExpense.create(:expense_id => @expense.id, :user_id => session[:user_id])
-                UserExpense.all << user_expense
-                user_expense.save
+                Expense.all << @expense
                 flash[:message] = "Expense added"
                 redirect to "/expense/#{@expense.id}"
               else
