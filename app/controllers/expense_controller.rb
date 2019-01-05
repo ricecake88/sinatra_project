@@ -31,7 +31,7 @@ class ExpenseController < ApplicationController
   get '/expense/select' do
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
-      @expenses = Expense.expenses_for_user(@sessionName)
+      @expenses = Helpers.current_user(@sessionName).expenses.sort_by(&:date).last(30)
       erb :'expense/select', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
@@ -55,10 +55,15 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
       @expense = Expense.find(params[:id])
-      @expense.update(params[:expense])
-      @expense.save
-      flash[:message] = "Expense Updated"
-      redirect to "/expense/#{@expense.id}"
+      if entry_valid?(params[:expense])
+        @expense.update(params[:expense])
+        @expense.save
+        flash[:message] = "Expense Updated"
+        redirect to "/expense/#{@expense.id}"
+      else
+        flash[:message] = "Entry already entered or invalid."
+        redirect '/expense/select'
+      end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -70,7 +75,7 @@ class ExpenseController < ApplicationController
     if Helpers.is_logged_in?(@sessionName)
       if (!params[:expense_id].nil?)
         @expense = Expense.find(params[:expense_id])
-        @categories = Category.categories_of_user(@sessionName)
+        #@categories = Helpers.current_user(session).categories
         if params[:Button] == "Edit"
           erb :"expense/#{@id}/edit", :layout => :layout_loggedin
         elsif params[:Button] == "Delete"
@@ -126,8 +131,7 @@ class ExpenseController < ApplicationController
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
           !params[:expense]["merchant"].empty?)
-          @matched_expense = entry_valid?(params[:expense])
-          if !@matched_expense
+          if entry_valid?(params[:expense])
             if params[:expense]["date"] > Time.now.to_s(:db)
               flash[:message] = "Invalid date"
               redirect to '/expense/add'
@@ -174,17 +178,14 @@ class ExpenseController < ApplicationController
   end
 
   helpers do
+
     def entry_valid?(expense)
-      @matched_expense_by_date = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'])
-      if @matched_expense_by_date.nil?
+      @matched_expense = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'], :user_id => session[:user_id], :amount => expense[:amount], :merchant => expense[:merchant])
+      if @matched_expense.nil?
+        return true
+      else
         return false
       end
-      if !(@matched_expense_by_date["merchant"] == expense["merchant"] ||
-          @matched_expense_by_date["amount"].to_d == expense["amount"].to_d ||
-          @matched_expense_by_date["description"] == expense["description"])
-        return false
-      end
-      return true
     end
   end
 end
