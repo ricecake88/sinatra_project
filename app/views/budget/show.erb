@@ -4,3 +4,5 @@
   <b>Category</b>: <%= Category.find(@budget.category_id).category_name %><br/>
   <b>Budget Amount</b>: $<%= '%.2f' % @budget.amount %><br/>
   </p>
+
+  <p><a href="/budgets">View All Budgets</a/></p>
