@@ -12,7 +12,7 @@
 
   <label for="expense[category_id]">Category</label>
   <select name="expense[category_id]">
-    <% Category.sort_categories(@sessionName).each do |cat| %>
+    <% @categories.each do |cat| %>
       <option value="<%= cat.id %>"><%= cat.category_name %></option>
     <% end %>
   </select><br/>

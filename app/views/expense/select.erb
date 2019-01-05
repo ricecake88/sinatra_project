@@ -21,7 +21,7 @@
         <td>$<%= '%.2f' % expense.amount %></td>
         <td><%= expense.merchant %></td>
         <td><%= expense.description %></td>
-        <td><%= Category.find(expense.category_id).category_name %></td>
+        <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
         <td><input type="submit" name="Button" value="Edit"></td>
         <td><input type="submit" name="Button" value="Delete"></td>
     </form>

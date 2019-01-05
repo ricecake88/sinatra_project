@@ -9,6 +9,7 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       user = Helpers.current_user(@sessionName)
+      @categories = Category.sort_categories(session)
       @expenses = user.expenses.sort_by(&:date).last(30)
       erb :'expense/index', :layout => :layout_loggedin
     else
@@ -20,7 +21,8 @@ class ExpenseController < ApplicationController
   get '/expense/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      Category.create_category_if_empty(@sessionName)
+      Category.create_category_if_empty(session)
+      @categories = Category.sort_categories(session)
       erb :'expense/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -30,8 +32,9 @@ class ExpenseController < ApplicationController
 
   get '/expense/select' do
     @sessionName = session
-    if Helpers.is_logged_in?(@sessionName)
-      @expenses = Helpers.current_user(@sessionName).expenses.sort_by(&:date).last(30)
+    if Helpers.is_logged_in?(session)
+      @expenses = Helpers.current_user(session).expenses.sort_by(&:date).last(30)
+      @categories = Category.sort_categories(session)
       erb :'expense/select', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
@@ -42,8 +45,9 @@ class ExpenseController < ApplicationController
   get '/expense/display/:num' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      user = Helpers.current_user(@sessionName)
+      user = Helpers.current_user(session)
       @expenses = user.expenses.sort_by(&:date).last(params[:num].to_i)
+      @categories = Category.sort_categories(session)
       erb :'expense/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -78,8 +82,8 @@ class ExpenseController < ApplicationController
 
   post '/expense/:id/edit' do
     @sessionName = session
-    if Helpers.is_logged_in?(@sessionName)
-      if (!params[:expense_id].nil?)
+    if Helpers.is_logged_in?(session)
+      if !params[:expense_id].nil?
         @expense = Expense.find(params[:expense_id])
         @categories = Category.sort_categories(session)
         if params[:Button] == "Edit"
@@ -97,9 +101,23 @@ class ExpenseController < ApplicationController
     end
   end
 
+  get '/expense/:id/edit' do
+    @sessionName = session
+    if Helpers.is_logged_in?(session)
+      if !params[:id].nil?
+        @expense = Expense.find(params[:id])
+        @categories = Category.sort_categories(session)
+        erb :"expense/edit", :layout => :layout_loggedin
+      end
+    else
+      flash[:message] = "Illegal action. Please log-in to access this page."
+      redirect to '/'
+    end
+  end
+
   get '/expense/:id/delete' do
     @sessionName = session
-    if Helpers.is_logged_in?(@sessionName)
+    if Helpers.is_logged_in?(session)
       @expense = Expense.find(params[:id])
       erb :"expense/delete", :layout => :layout_loggedin
     else
@@ -112,6 +130,7 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expense = Expense.find(params[:id])
+      @categories = Category.sort_categories(session)
       erb :'expense/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -121,7 +140,7 @@ class ExpenseController < ApplicationController
 
   post '/expense' do
     @sessionName = session
-    if Helpers.is_logged_in?(@sessionName)
+    if Helpers.is_logged_in?(session)
       @num_days = params[:num_days]
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -132,7 +151,7 @@ class ExpenseController < ApplicationController
 
   post '/expense/add' do
     @sessionName = session
-    if Helpers.is_logged_in?(@sessionName)
+    if Helpers.is_logged_in?(session)
       if (!params[:expense]["date"].empty? &&
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
@@ -143,7 +162,7 @@ class ExpenseController < ApplicationController
               redirect to '/expense/add'
             else
               @expense = Expense.new(params[:expense])
-              user = Helpers.current_user(@sessionName)
+              user = Helpers.current_user(session)
               @expense.user = user
               user.expenses << @expense
               if @expense.save
@@ -170,7 +189,7 @@ class ExpenseController < ApplicationController
 
   delete '/expense/:id/delete' do
     @sessionName = session
-    if Helpers.is_logged_in?(@sessionName)
+    if Helpers.is_logged_in?(session)
       @expense = Expense.find_by_id(params[:id])
       if @expense
         @expense.delete
