@@ -51,15 +51,23 @@ class CategoryController < ApplicationController
   post '/categories/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      if !exists_already?(params[:category_name])
-        name = params[:category_name]
-        user = Helpers.current_user(@sessionName)
-        cat = Category.create(:category_name => name, :user_id => user.id)
-        Category.all << cat
-        cat.save
-        flash[:message] = "Added category!"
+      if !params[:category_name].empty?
+        if !exists_already?(params[:category_name])
+          name = params[:category_name]
+          user = Helpers.current_user(@sessionName)
+          #cat = Category.new(:category_name => name, :user_id => user.id)
+          user_category = Category.new(:category_name => params[:category_name])
+          user_category.user = user
+          binding.pry
+          #user.categories << user_category
+          Category.all << user_category
+          user_category.save
+          flash[:message] = "Added category!"
+        else
+          flash[:message] = "Error, category already exists"
+        end
       else
-        flash[:message] = "Error, category already exists"
+        flash[:message] = "Error, category is empty."
       end
       redirect to '/categories'
     else
