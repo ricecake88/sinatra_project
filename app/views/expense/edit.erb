@@ -7,7 +7,7 @@
     <b>Description</b>: <input type="text" name="expense[description]" value="<%= @expense.description %>"><br/>
     <b>Category</b>:
     <select name="expense[category_id]">
-      <% @categories.each do |cat| %>
+      <% Category.sort_categories(@sessionName).each do |cat| %>
       <option value="<%= cat.id %>" <%= "selected" if @expense.category_id == cat.id %>><%= cat.category_name %></option>
       <% end %>
     </select>

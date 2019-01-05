@@ -12,9 +12,9 @@
 
   <label for="expense[category_id]">Category</label>
   <select name="expense[category_id]">
-  <% Category.categories_of_user(@sessionName).each do |cat| %>
-    <option value="<%= cat.id %>"><%= cat.category_name %></option>
-  <% end %>
+    <% Category.sort_categories(@sessionName).each do |cat| %>
+      <option value="<%= cat.id %>"><%= cat.category_name %></option>
+    <% end %>
   </select><br/>
 
   <label for="expense[merchant]">Merchant</label>
