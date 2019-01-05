@@ -1,4 +1,6 @@
 class Category < ActiveRecord::Base
+  belongs_to :user
+
   def self.create_category_if_empty(sessionName)
     user = Helpers.current_user(sessionName)
     if Category.find_by(:user_id => user.id).nil?
