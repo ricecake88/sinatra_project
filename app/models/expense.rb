@@ -27,20 +27,12 @@ class Expense < ActiveRecord::Base
       @expenses = Expense.where(:category_id => category_id).order(date: :desc)
     end
 
-    def self.expenses_last_x_days(sessionName, limit_days)
-      expenses = Expense.expenses_for_user(sessionName).last(limit_days)
-      return expenses
-    end
-
     def self.expenses_current_month(desired_year, desired_month, sessionName)
       expenses = []
       expenses_current_month = Expense.where("cast(strftime('%m', date) as int) = ? and cast(strftime('%Y', date) as int) = ?", desired_month, desired_year).order(date: :asc)
-      expenses_by_user = Expense.expenses_for_user(sessionName)
-      expenses_current_month.each do |e_cm|
-        expenses_by_user.each do |e_u|
-          if e_cm.id == e_u.id
-            expenses << e_cm
-          end
+      expenses_current_month.each do |expense|
+        if expense.user_id == Helpers.current_user(sessionName).id
+          expenses << expense
         end
       end
       return expenses
@@ -56,16 +48,14 @@ class Expense < ActiveRecord::Base
         year = current_year
       end
       expenses_previous_month = Expense.where("cast(strftime('%m', date) as int) = ? and cast(strftime('%Y', date) as int) = ?", month, year).order(date: :asc)
-      expenses_by_user = Expense.expenses_for_user(sessionName)
-      expenses_previous_month.each do |e_pm|
-        expenses_by_user.each do |e_u|
-          if e_pm.id == e_u.id
-            expenses << e_pm
-          end
+      expenses_previous_month.each do |expense|
+        if expense.user_id == Helpers.current_user(sessionName).id
+          expenses << expense
         end
       end
       return expenses
     end
+
 
     def self.total_current_month(sessionName)
       expenses = Expense.expenses_current_month(Helpers.current_year, Helpers.current_month, sessionName)
