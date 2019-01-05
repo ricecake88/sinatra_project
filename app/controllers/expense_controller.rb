@@ -134,6 +134,7 @@ class ExpenseController < ApplicationController
             else
               @expense = Expense.new(params[:expense])
               user = Helpers.current_user(@sessionName)
+              @expense.user = user
               user.expenses << @expense
               if @expense.save
                 Expense.all << @expense
