@@ -1,5 +1,6 @@
 class Budget < ActiveRecord::Base
     belongs_to :category
+    belongs_to :user
 
     def self.budgets_for_user(sessionName)
       @budgets = []

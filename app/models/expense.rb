@@ -1,6 +1,6 @@
 class Expense < ActiveRecord::Base
     has_many :user_expenses
-    has_many :users, through: :user_expenses
+    belongs_to :user
 
     def self.total_expenses_for_user(expenses)
       total = 0
