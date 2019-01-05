@@ -19,7 +19,7 @@
 
   <h2>Current Month - Budget Tracking</h2>
 
-  <% categories = Category.categories_of_user(@sessionName) %>
+  <% categories = Helpers.current_user(@sessionName).categories %>
   <% if !categories.empty? %>
     <table>
       <tr>
