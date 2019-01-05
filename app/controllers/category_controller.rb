@@ -8,14 +8,9 @@ class CategoryController < ApplicationController
     @sessionName = session
     @categories = []
     if Helpers.is_logged_in?(session)
-      user_id = Helpers.current_user(session).id
       Category.create_category_if_empty(@sessionName)
-      Category.all.each do |cat|
-        if cat.user_id == user_id
-          @categories << cat
-        end
-        @categories.sort_by!{ |c| c.category_name.downcase }
-      end
+      @categories = Helpers.current_user(@sessionName).categories
+      @categories = @categories.sort_by &:category_name
       erb :'category/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -55,7 +50,6 @@ class CategoryController < ApplicationController
         if !exists_already?(params[:category_name])
           name = params[:category_name]
           user = Helpers.current_user(@sessionName)
-          #cat = Category.new(:category_name => name, :user_id => user.id)
           user_category = Category.new(:category_name => params[:category_name])
           user_category.user = user
           binding.pry
@@ -79,7 +73,8 @@ class CategoryController < ApplicationController
   get '/categories/show' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @categories = Category.categories_of_user(@sessionName)
+      @categories = Helpers.current_user(@sessionName).categories
+      @categories = @categories.sort_by &:category_name
       erb :'/category/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
