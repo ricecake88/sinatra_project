@@ -55,11 +55,17 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
       @expense = Expense.find(params[:id])
-      if entry_valid?(params[:expense])
-        @expense.update(params[:expense])
-        @expense.save
-        flash[:message] = "Expense Updated"
-        redirect to "/expense/#{@expense.id}"
+      @id = params[:id]
+      if new_entry?(params[:expense])
+        if params[:expense]["date"] > Time.now.to_s(:db)
+          flash[:message] = "Invalid date"
+          redirect to "/expense/select"
+        else
+          @expense.update(params[:expense])
+          @expense.save
+          flash[:message] = "Expense Updated"
+          redirect to "/expense/#{@expense.id}"
+        end
       else
         flash[:message] = "Entry already entered or invalid."
         redirect '/expense/select'
@@ -131,7 +137,7 @@ class ExpenseController < ApplicationController
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
           !params[:expense]["merchant"].empty?)
-          if entry_valid?(params[:expense])
+          if new_entry?(params[:expense])
             if params[:expense]["date"] > Time.now.to_s(:db)
               flash[:message] = "Invalid date"
               redirect to '/expense/add'
@@ -179,7 +185,7 @@ class ExpenseController < ApplicationController
 
   helpers do
 
-    def entry_valid?(expense)
+    def new_entry?(expense)
       @matched_expense = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'], :user_id => session[:user_id], :amount => expense[:amount], :merchant => expense[:merchant])
       if @matched_expense.nil?
         return true
