@@ -47,12 +47,11 @@ class CategoryController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       if !params[:category_name].empty?
-        if !exists_already?(params[:category_name])
+        if !exists_already?(params[:name])
           name = params[:category_name]
           user = Helpers.current_user(@sessionName)
           user_category = Category.new(:category_name => params[:category_name])
           user_category.user = user
-          binding.pry
           #user.categories << user_category
           Category.all << user_category
           user_category.save
@@ -108,7 +107,8 @@ class CategoryController < ApplicationController
   helpers do
 
     def exists_already?(name)
-      name = Category.find_by(:category_name => name)
+      name = Category.find_by(:category_name => name, :user_id => session[:user_id])
+      binding.pry
       if name != nil
         return true
       end
