@@ -7,7 +7,7 @@ class BudgetController < ApplicationController
   get '/budgets' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @budgets = Budget.budgets_for_user(@sessionName)
+      @budgets = Helpers.current_user(@sessionName).budgets
       erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -59,10 +59,14 @@ class BudgetController < ApplicationController
         flash[:message] = "Error, budget amount must not be negative."
         redirect to "/budgets"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
-        @budget = Budget.create(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
+        user = Helpers.current_user(session)
+        @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
+        @budget.user = user
+        user.budgets << @budget
         Budget.all << @budget
-        @budget.save
-        redirect to "/budgets/#{@budget.id}"
+        if @budget.save
+          redirect to "/budgets/#{@budget.id}"
+        end
       else
         flash[:message] = "Sorry, either the amount or category entered is empty"
         redirect to "/budgets/add"
