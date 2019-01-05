@@ -2,19 +2,6 @@ class Budget < ActiveRecord::Base
     belongs_to :category
     belongs_to :user
 
-    def self.budgets_for_user(sessionName)
-      @budgets = []
-      categories_user = Category.categories_of_user(sessionName)
-      if !categories_user.nil?
-        Budget.all.each do |b|
-          if categories_user.ids.include?(b.category_id)
-            @budgets << b
-          end
-        end
-      end
-      @budgets
-    end
-
     def self.surplus_for_category(sessionName, category_id)
       budget = Budget.find_by(:category_id => category_id)
       total_curr_month = Expense.total_current_month_by_category(sessionName, category_id)
