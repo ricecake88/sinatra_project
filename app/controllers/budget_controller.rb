@@ -7,7 +7,8 @@ class BudgetController < ApplicationController
   get '/budgets' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @budgets = Helpers.current_user(@sessionName).budgets
+      @budgets = Helpers.current_user(session).budgets
+      @categories = Helpers.current_user(session).categories
       erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -19,7 +20,8 @@ class BudgetController < ApplicationController
   get '/budgets/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      Category.create_category_if_empty(@sessionName)
+      Category.create_category_if_empty(session)
+      @categories = Helpers.current_user(session).categories
       erb :'/budget/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -31,6 +33,7 @@ class BudgetController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @budget = Budget.find(params[:id])
+      @categories = Helpers.current_user(session).categories
       erb :'/budget/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -42,6 +45,7 @@ class BudgetController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @budget = Budget.find(params[:id])
+      @categories = Helpers.current_user(session).categories
       erb :'/budget/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."

@@ -1,7 +1,7 @@
 <h1>Budget Details</h1>
 
   <p>
-  <b>Category</b>: <%= Category.find(@budget.category_id).category_name %><br/>
+  <b>Category</b>: <%= @categories.find {|c| c.id == @budget.category_id}.category_name %><br/>
   <b>Budget Amount</b>: $<%= '%.2f' % @budget.amount %><br/>
   </p>
 

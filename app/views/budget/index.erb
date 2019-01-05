@@ -15,7 +15,7 @@
       <tr>
     <% @budgets.each do |b| %>
       <tr>
-        <td><%= Category.find(b.category_id).category_name %></td>
+        <td><%= @categories.find {|c| c.id == b.category_id}.category_name %></td>
         <td>$<%= '%.2f'% b.amount %></td>
         <td><% if b.rollover %>
             Yes
