@@ -72,8 +72,7 @@ class CategoryController < ApplicationController
   get '/categories/show' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @categories = Helpers.current_user(@sessionName).categories
-      @categories = @categories.sort_by &:category_name
+      @categories = Category.sort_categories(session)
       erb :'/category/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -108,7 +107,6 @@ class CategoryController < ApplicationController
 
     def exists_already?(name)
       name = Category.find_by(:category_name => name, :user_id => session[:user_id])
-      binding.pry
       if name != nil
         return true
       end
@@ -116,11 +114,12 @@ class CategoryController < ApplicationController
     end
 
     def set_category_to_default(expenses)
-      @categories = Category.categories_of_user(session)
+      @categories = Helpers.current_user(session).categories
       default_user_category_id = 0
       @categories.each do |cat|
         if cat.category_name == "Expenses"
           default_user_category_id = cat.id
+          break
         end
       end
       expenses.each do |expense|
