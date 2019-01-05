@@ -81,7 +81,7 @@ class ExpenseController < ApplicationController
     if Helpers.is_logged_in?(@sessionName)
       if (!params[:expense_id].nil?)
         @expense = Expense.find(params[:expense_id])
-        #@categories = Helpers.current_user(session).categories
+        @categories = Category.sort_categories(session)
         if params[:Button] == "Edit"
           erb :"expense/#{@id}/edit", :layout => :layout_loggedin
         elsif params[:Button] == "Delete"
