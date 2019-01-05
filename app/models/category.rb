@@ -12,8 +12,8 @@ class Category < ActiveRecord::Base
     end
   end
 
-  def self.categories_of_user(sessionName)
-    user = Helpers.current_user(sessionName)
-    categories = Category.where(:user_id => user.id)
+  def self.sort_categories(sessionName)
+    categories = Helpers.current_user(sessionName).categories
+    categories.sort_by &:category_name
   end
 end
