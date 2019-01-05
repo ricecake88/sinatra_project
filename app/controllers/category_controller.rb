@@ -86,7 +86,7 @@ class CategoryController < ApplicationController
       @categories = params[:category]
       if !@categories.nil?
         @categories.each do |cat|
-          expenses_current_category = Expense.expenses_by_user_category(session, cat["id"])
+          expenses_current_category = Expense.where(:category_id => cat["id"], :user_id => session[:user_id])
           set_category_to_default(expenses_current_category)
           category = Category.find(cat["id"])
           if !category.nil?
