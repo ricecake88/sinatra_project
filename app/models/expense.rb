@@ -2,10 +2,6 @@ class Expense < ActiveRecord::Base
     has_many :user_expenses
     belongs_to :user
 
-    def self.expenses_by_user_category(sessionName, category_id)
-      @expenses = Expense.where(:category_id => category_id).order(date: :desc)
-    end
-
     def self.expenses_current_month(desired_year, desired_month, sessionName)
       expenses = []
       expenses_current_month = Expense.where("cast(strftime('%m', date) as int) = ? and cast(strftime('%Y', date) as int) = ?", desired_month, desired_year).order(date: :asc)
