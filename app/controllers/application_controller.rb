@@ -29,7 +29,7 @@ class ApplicationController < Sinatra::Base
       flash[:message] = "Username already exists."
       redirect '/signup'
     else
-      @user = User.create(username: params[:username], password: params[:password])
+      @user = User.new(username: params[:username], password: params[:password])
       if @user.save
         flash[:message] = "Account created. Please sign in!"
         redirect '/'
@@ -38,18 +38,13 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/login' do
-    if params[:username].empty? || params[:password].empty?
-      flash[:message] = "Sorry, username or password field missing."
-      redirect '/'
+    @user = User.find_by(username: params[:username])
+    if @user && @user.authenticate(params[:password])
+      session[:user_id] = @user.id
+      redirect '/account'
     else
-      @user = User.find_by(username: params[:username], password: params[:password])
-      if @user
-        session[:user_id] = @user.id
-        redirect '/account'
-      else
-        flash[:message] = "Sorry, username/password combination does not exist."
-        redirect '/'
-      end
+      flash[:message] = "Sorry, username/password combination does not exist."
+      redirect '/'
     end
   end
 
