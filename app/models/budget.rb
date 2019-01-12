@@ -1,5 +1,6 @@
 class Budget < ActiveRecord::Base
     #belongs_to :user
+    belongs_to :category
 
     def self.surplus_for_category(sessionName, category_id)
       budget = Budget.find_by(:category_id => category_id)
