@@ -1,0 +1,17 @@
+
+  <h1>Delete Categories</h1>
+
+  <p>Select the categories to delete:</p>
+
+  <p>
+    <form method="post" action="/categories/delete">
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray">Expenses</span><br/>
+      <% @categories.each do |cat| %>
+        <% if cat.category_name != "Expenses" %>
+          <input type="checkbox" id="<%= cat.id %>" value="<%= cat.id %>" name="category[][id]"><%= cat.category_name %><br/>
+        <% end %>
+      <% end %>
+      <input id="hidden" type="hidden" name="_method" value="Delete">
+      <input type="submit" value="Delete">
+    </form>
+  </p>
