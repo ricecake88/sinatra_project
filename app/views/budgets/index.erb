@@ -1,6 +1,6 @@
   <h1>Current Monthly Budget Limits</h1>
 
-  <% if @budgets.empty? %>
+  <% if @budgets.empty? || @budgets.count(nil) > 0 %>
     <p>
     No Budgets Set<br/>
    </p>

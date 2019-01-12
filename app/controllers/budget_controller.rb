@@ -37,7 +37,7 @@ class BudgetController < ApplicationController
       user = Helpers.current_user(session)
       @budget = Budget.find(params[:id])
       @categories = user.categories_sorted
-      erb :'/budget/edit', :layout => :layout_loggedin
+      erb :'/budgets/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'

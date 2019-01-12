@@ -1,6 +1,6 @@
   <h1>Add a budget</h1>
 
-  <form method="post" action="/budgets/add">
+  <form method="post" action="/budgets/new">
     <select name="budget[category]">
       <% @categories.each do |cat| %>
         <option value="<%= cat.id %>"><%= cat.category_name %></option>
