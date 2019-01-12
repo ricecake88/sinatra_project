@@ -8,9 +8,10 @@ class CategoryController < ApplicationController
     @sessionName = session
     @categories = []
     if Helpers.is_logged_in?(session)
+      user = Helpers.current_user(session)
       Category.create_category_if_empty(@sessionName)
-      @categories = Category.sort_categories(@sessionName)
-      erb :'category/index', :layout => :layout_loggedin
+      @categories = user.categories_sorted
+      erb :'categories/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -42,18 +43,18 @@ class CategoryController < ApplicationController
     redirect to '/categories'
   end
 
-  post '/categories/add' do
+  post '/categories/new' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    if Helpers.is_logged_in?(session) && !Helpers.current_user(session).nil?
       if !params[:category_name].empty?
         if !exists_already?(params[:category_name])
           name = params[:category_name]
           user = Helpers.current_user(session)
-          user_category = Category.new(:category_name => params[:category_name])
-          user_category.user = user
-          if user_category.save
-            user.categories << user_category
-            Category.all << user_category
+          category = Category.new(:category_name => params[:category_name])
+          category.user = user
+          if category.save
+            user.categories << category
+            Category.all << category
             flash[:message] = "Added category!"
           end
         else
@@ -69,11 +70,12 @@ class CategoryController < ApplicationController
     end
   end
 
-  get '/categories/show' do
+  get '/categories/delete' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       @categories = Category.sort_categories(session)
-      erb :'/category/show', :layout => :layout_loggedin
+      erb :'/categories/delete', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -82,12 +84,15 @@ class CategoryController < ApplicationController
 
   delete '/categories/delete' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       @categories = params[:category]
       if !@categories.nil?
         @categories.each do |cat|
-          expenses_current_category = Expense.where(:category_id => cat["id"], :user_id => session[:user_id])
-          set_category_to_default(expenses_current_category)
+          expenses_current_category = Expense.where(:category_id => cat["id"])
+          if !expenses_current_category.empty?
+            set_category_to_default(expenses_current_category)
+          end
           category = Category.find(cat["id"])
           if !category.nil?
             category.delete
@@ -116,17 +121,22 @@ class CategoryController < ApplicationController
     def set_category_to_default(expenses)
       @categories = Helpers.current_user(session).categories
       default_user_category_id = 0
+
       @categories.each do |cat|
         if cat.category_name == "Expenses"
           default_user_category_id = cat.id
           break
         end
       end
+
       expenses.each do |expense|
         expense_row = Expense.find(expense.id)
         expense_row.update(:category_id => default_user_category_id)
         expense_row.save
       end
+
     end
+
   end
+
 end
