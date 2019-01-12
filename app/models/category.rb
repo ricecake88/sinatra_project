@@ -1,5 +1,7 @@
 class Category < ActiveRecord::Base
   belongs_to :user
+  belongs_to :budget
+  has_many :expenses
 
   def self.create_category_if_empty(sessionName)
     user = Helpers.current_user(sessionName)

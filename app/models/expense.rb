@@ -1,6 +1,5 @@
 class Expense < ActiveRecord::Base
-    has_many :user_expenses
-    belongs_to :user
+    belongs_to :category
 
     def self.expenses_current_month(desired_year, desired_month, sessionName)
       expenses = []
