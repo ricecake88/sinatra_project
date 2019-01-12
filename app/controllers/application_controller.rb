@@ -33,6 +33,9 @@ class ApplicationController < Sinatra::Base
       if @user.save
         flash[:message] = "Account created. Please sign in!"
         redirect '/'
+      else
+        flash[:message] = "Unknown error. Please try again."
+        redirect '/signup'
       end
     end
   end
