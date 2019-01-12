@@ -1,0 +1,29 @@
+
+  <h1>Select an Expense</h1>
+
+  <table>
+    <tr>
+      <th>Select</th>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Merchant</th>
+      <th>Description</th>
+      <th>Category</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  <% @expenses.each do |expense| %>
+  <p>
+    <form method="post" action="/expenses/<%= expense.id %>/edit">
+      <tr>
+        <td><input type="radio" name="expense_id" value="<%= expense.id %>"></td>
+        <td><%= expense.date %></td>
+        <td>$<%= '%.2f' % expense.amount %></td>
+        <td><%= expense.merchant %></td>
+        <td><%= expense.description %></td>
+        <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
+        <td><input type="submit" name="Button" value="Edit"></td>
+        <td><input type="submit" name="Button" value="Delete"></td>
+    </form>
+  </p>
+  <% end %>
