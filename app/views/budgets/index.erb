@@ -1,0 +1,32 @@
+  <h1>Current Monthly Budget Limits</h1>
+
+  <% if @budgets.empty? %>
+    <p>
+    No Budgets Set<br/>
+   </p>
+  <% else %>
+
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Rollover?</th>
+        <th>Edit</th>
+      <tr>
+    <% @budgets.each do |b| %>
+      <tr>
+        <td><%= @categories.detect  {|cat| b.id == cat.id }.category_name %></td>
+        <td>$<%= '%.2f'% b.amount %></td>
+        <td><% if b.rollover %>
+            Yes
+            <% else %>
+            No
+            <% end %>
+          </td>
+        <td><a href="/budgets/<%= b.id %>/edit">Edit</a></td>
+      </tr>
+    <% end %>
+    </table>
+  <% end %>
+
+  <p><a href="/budgets/new">Add a budget?</a></p>

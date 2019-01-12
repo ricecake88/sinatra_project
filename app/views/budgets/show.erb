@@ -1,0 +1,8 @@
+<h1>Budget Details</h1>
+
+  <p>
+  <b>Category</b>: <%= @categories.find {|c| c.id == @budget.category_id}.category_name %><br/>
+  <b>Budget Amount</b>: $<%= '%.2f' % @budget.amount %><br/>
+  </p>
+
+  <p><a href="/budgets">View All Budgets</a/></p>

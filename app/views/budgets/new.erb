@@ -1,0 +1,18 @@
+  <h1>Add a budget</h1>
+
+  <form method="post" action="/budgets/add">
+    <select name="budget[category]">
+      <% @categories.each do |cat| %>
+        <option value="<%= cat.id %>"><%= cat.category_name %></option>
+      <% end %>
+    </select>
+
+    <label for="budget[amount]">Amount:</label>
+    <input type="number" step="any" name="budget[amount]"><br/>
+
+    <label for="budget[rollover]">Rollover?</label>
+    <input type="radio" name="budget[rollover]" value=true>Yes
+    <input type="radio" name="budget[rollover]" value=false checked>No<br/>
+
+    <input type="submit" value="Submit">
+  </form>

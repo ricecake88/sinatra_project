@@ -10,7 +10,7 @@ class BudgetController < ApplicationController
       user = Helpers.current_user(session)
       @budgets = user.budgets
       @categories = user.categories
-      erb :'budget/index', :layout => :layout_loggedin
+      erb :'budgets/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -18,13 +18,13 @@ class BudgetController < ApplicationController
 
   end
 
-  get '/budgets/add' do
+  get '/budgets/new' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       user = Helpers.current_user(session)
       Category.create_category_if_empty(session)
       @categories = user.categories_sorted
-      erb :'/budget/add', :layout => :layout_loggedin
+      erb :'/budgets/new', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
@@ -49,14 +49,14 @@ class BudgetController < ApplicationController
     if Helpers.is_logged_in?(session)
       @budget = Budget.find(params[:id])
       @categories = Helpers.current_user(session).categories
-      erb :'/budget/show', :layout => :layout_loggedin
+      erb :'/budgets/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
   end
 
-  post '/budgets/add' do
+  post '/budgets/new' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       if cat_exists?(params[:budget]['category'])
@@ -69,7 +69,6 @@ class BudgetController < ApplicationController
         user = Helpers.current_user(session)
         @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         @category = Category.find(params[:budget][:category].to_i)
-        binding.pry
         if @budget.save
           @category.budget = @budget
           Budget.all << @budget
