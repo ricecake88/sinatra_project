@@ -69,8 +69,9 @@ class BudgetController < ApplicationController
         user = Helpers.current_user(session)
         @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         @category = Category.find(params[:budget][:category].to_i)
+        binding.pry
         if @budget.save
-          @category.budget << @budget
+          @category.budget = @budget
           Budget.all << @budget
           redirect to "/budgets/#{@budget.id}"
         end
