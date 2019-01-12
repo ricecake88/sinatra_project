@@ -7,8 +7,9 @@ class BudgetController < ApplicationController
   get '/budgets' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
-      @budgets = Helpers.current_user(session).budgets
-      @categories = Helpers.current_user(session).categories
+      user = Helpers.current_user(session)
+      @budgets = user.budgets
+      @categories = user.categories
       erb :'budget/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -20,8 +21,9 @@ class BudgetController < ApplicationController
   get '/budgets/add' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      user = Helpers.current_user(session)
       Category.create_category_if_empty(session)
-      @categories = Helpers.current_user(session).categories
+      @categories = user.categories_sorted
       erb :'/budget/add', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -32,8 +34,9 @@ class BudgetController < ApplicationController
   get '/budgets/:id/edit' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
+      user = Helpers.current_user(session)
       @budget = Budget.find(params[:id])
-      @categories = Helpers.current_user(session).categories
+      @categories = user.categories_sorted
       erb :'/budget/edit', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -65,10 +68,10 @@ class BudgetController < ApplicationController
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
         user = Helpers.current_user(session)
         @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
-        @budget.user = user
-        user.budgets << @budget
-        Budget.all << @budget
+        @category = Category.find(params[:budget][:category].to_i)
         if @budget.save
+          @category.budget << @budget
+          Budget.all << @budget
           redirect to "/budgets/#{@budget.id}"
         end
       else
