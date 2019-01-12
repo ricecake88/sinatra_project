@@ -1,6 +1,6 @@
   <h1>Expenses</h1>
 
-  <form method="get" action="/expenses">
+  <form method="get" action="/expenses/display/<%= @num_days %>">
     <select name="num_days">
       <option value="10">Last 10 Records</option>
       <option value="30">Last 30 Records</option>
@@ -35,5 +35,5 @@
   <% end %>
 
   <p>
-    <a href="/expense/add">Add a new expense</a> | <a href="/expense/select">Edit expenses</a>
+    <a href="/expenses/new">Add a new expense</a> | <a href="/expenses/select">Edit expenses</a>
   </p>

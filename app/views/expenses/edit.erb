@@ -1,6 +1,6 @@
   <h1>Update an Expense</h1>
 
-  <form method="post" action="/expenses/<%= @expense.id %>">
+  <form method="post" action="/expenses/<%= @expense.id %>/update">
     <input id="hidden" type="hidden" name="_method" value="patch">
     <b>Date</b>: <input type="date" name="expense[date]" value="<%= @expense.date %>"><br/>
     <b>Amount</b>: $<input type="number" step="any" name="expense[amount]" value="<%= '%.2f' % @expense.amount %>"><br/>

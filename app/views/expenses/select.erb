@@ -3,7 +3,6 @@
 
   <table>
     <tr>
-      <th>Select</th>
       <th>Date</th>
       <th>Amount</th>
       <th>Merchant</th>
@@ -15,8 +14,8 @@
   <% @expenses.each do |expense| %>
   <p>
     <form method="post" action="/expenses/<%= expense.id %>/edit">
+      <input type="hidden" name="expense_id" value="<%= expense.id %>">
       <tr>
-        <td><input type="radio" name="expense_id" value="<%= expense.id %>"></td>
         <td><%= expense.date %></td>
         <td>$<%= '%.2f' % expense.amount %></td>
         <td><%= expense.merchant %></td>
