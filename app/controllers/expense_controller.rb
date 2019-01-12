@@ -5,37 +5,38 @@ class ExpenseController < ApplicationController
   enable :sessions
 
   set :public_folder, 'public'
-  get '/expense' do
+  get '/expenses' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       user = Helpers.current_user(@sessionName)
+      Category.create_category_if_empty(session)
       @categories = Category.sort_categories(session)
-      @expenses = user.expenses.sort_by(&:date).last(30)
-      erb :'expense/index', :layout => :layout_loggedin
+      @expenses = user.all_expenses.sort_by(&:date).last(30)
+      erb :'expenses/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
   end
 
-  get '/expense/add' do
+  get '/expenses/new' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       Category.create_category_if_empty(session)
       @categories = Category.sort_categories(session)
-      erb :'expense/add', :layout => :layout_loggedin
+      erb :'expenses/new', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
   end
 
-  get '/expense/select' do
+  get '/expenses/select' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expenses = Helpers.current_user(session).expenses.sort_by(&:date).last(30)
       @categories = Category.sort_categories(session)
-      erb :'expense/select', :layout => :layout_loggedin
+      erb :'expenses/select', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
       redirect '/'
@@ -48,14 +49,14 @@ class ExpenseController < ApplicationController
       user = Helpers.current_user(session)
       @expenses = user.expenses.sort_by(&:date).last(params[:num].to_i)
       @categories = Category.sort_categories(session)
-      erb :'expense/index', :layout => :layout_loggedin
+      erb :'expenses/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
   end
 
-  patch '/expense/:id' do
+  patch '/expenses/:id' do
     @sessionName = session
     if Helpers.is_logged_in?(@sessionName)
       @expense = Expense.find(params[:id])
@@ -63,16 +64,16 @@ class ExpenseController < ApplicationController
       if new_entry?(params[:expense])
         if params[:expense]["date"] > Time.now.to_s(:db)
           flash[:message] = "Invalid date"
-          redirect to "/expense/select"
+          redirect to "/expenses/select"
         else
           @expense.update(params[:expense])
           @expense.save
           flash[:message] = "Expense Updated"
-          redirect to "/expense/#{@expense.id}"
+          redirect to "/expenses/#{@expense.id}"
         end
       else
         flash[:message] = "Entry already entered or invalid."
-        redirect '/expense/select'
+        redirect '/expenses/select'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -80,20 +81,20 @@ class ExpenseController < ApplicationController
     end
   end
 
-  post '/expense/:id/edit' do
+  post '/expenses/:id/edit' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       if !params[:expense_id].nil?
         @expense = Expense.find(params[:expense_id])
         @categories = Category.sort_categories(session)
         if params[:Button] == "Edit"
-          erb :"expense/#{@id}/edit", :layout => :layout_loggedin
+          erb :"expenses/#{@id}/edit", :layout => :layout_loggedin
         elsif params[:Button] == "Delete"
-          erb :"expense/#{@id}/delete", :layout => :layout_loggedin
+          erb :"expenses/#{@id}/delete", :layout => :layout_loggedin
         end
       else
         flash[:message] = "No Expense Selected"
-        redirect to '/expense/select'
+        redirect to '/expenses/select'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -107,7 +108,7 @@ class ExpenseController < ApplicationController
       if !params[:id].nil?
         @expense = Expense.find(params[:id])
         @categories = Category.sort_categories(session)
-        erb :"expense/edit", :layout => :layout_loggedin
+        erb :"expenses/edit", :layout => :layout_loggedin
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -119,7 +120,7 @@ class ExpenseController < ApplicationController
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expense = Expense.find(params[:id])
-      erb :"expense/delete", :layout => :layout_loggedin
+      erb :"expenses/delete", :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page/"
       redirect '/'
@@ -131,7 +132,7 @@ class ExpenseController < ApplicationController
     if Helpers.is_logged_in?(session)
       @expense = Expense.find(params[:id])
       @categories = Category.sort_categories(session)
-      erb :'expense/show', :layout => :layout_loggedin
+      erb :'expenses/show', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
@@ -146,7 +147,7 @@ class ExpenseController < ApplicationController
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
     end
-    redirect to "/expense/display/#{@num_days}"
+    redirect to "/expenses/display/#{@num_days}"
   end
 
   post '/expense/add' do
@@ -168,18 +169,18 @@ class ExpenseController < ApplicationController
               if @expense.save
                 Expense.all << @expense
                 flash[:message] = "Expense added"
-                redirect to "/expense/#{@expense.id}"
+                redirect to "/expenses/#{@expense.id}"
               else
-                redirect to '/expense/add'
+                redirect to '/expenses/add'
               end
             end
           else
             flash[:message] = "Already added"
-            redirect to '/expense/add'
+            redirect to '/expenses/add'
           end
       else
         flash[:message] = "Missing Fields"
-        redirect to '/expense/add'
+        redirect to '/expenses/add'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -187,7 +188,7 @@ class ExpenseController < ApplicationController
     end
   end
 
-  delete '/expense/:id/delete' do
+  delete '/expenses/:id/delete' do
     @sessionName = session
     if Helpers.is_logged_in?(session)
       @expense = Expense.find_by_id(params[:id])
@@ -195,7 +196,7 @@ class ExpenseController < ApplicationController
         @expense.delete
       end
       flash[:message] = "Expense Deleted"
-      redirect to '/expense'
+      redirect to '/expenses'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
