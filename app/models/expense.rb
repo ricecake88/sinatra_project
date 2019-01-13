@@ -1,14 +1,14 @@
+require 'date'
+
 class Expense < ActiveRecord::Base
     belongs_to :category
 
-    def self.expenses_current_month(desired_year, desired_month, sessionName)
+    def self.specific_month_expenses(desired_year, desired_month, sessionName)
       expenses = []
-      expenses_current_month = Expense.where("cast(strftime('%m', date) as int) = ? and cast(strftime('%Y', date) as int) = ?", desired_month, desired_year).order(date: :asc)
-      expenses_current_month.each do |expense|
-        if expense.user_id == Helpers.current_user(sessionName).id
-          expenses << expense
-        end
-      end
+      user = Helpers.current_user(sessionName)
+      expenses = user.expenses.select {
+        |e| e.date.strftime("%m").to_i == desired_month && e.date.strftime("%Y").to_i
+      }
       return expenses
     end
 
@@ -21,18 +21,13 @@ class Expense < ActiveRecord::Base
         month = Helpers.current_month - 1
         year = current_year
       end
-      expenses_previous_month = Expense.where("cast(strftime('%m', date) as int) = ? and cast(strftime('%Y', date) as int) = ?", month, year).order(date: :asc)
-      expenses_previous_month.each do |expense|
-        if expense.user_id == Helpers.current_user(sessionName).id
-          expenses << expense
-        end
-      end
+      expenses_previous_month = self.specific_month_expenses(year, month, sessionName)
       return expenses
     end
 
 
     def self.total_current_month(sessionName)
-      expenses = Expense.expenses_current_month(Helpers.current_year, Helpers.current_month, sessionName)
+      expenses = Expense.specific_month_expenses(Helpers.current_year, Helpers.current_month, sessionName)
       amount = 0
       expenses.each do |e|
         amount+= e.amount
@@ -42,8 +37,9 @@ class Expense < ActiveRecord::Base
 
     def self.total_current_month_by_category(sessionName, category_id)
       total_in_category = 0
-      expenses = Expense.expenses_current_month(Helpers.current_year(), Helpers.current_month, sessionName)
-      expenses.each do |e|
+      user = Helpers.current_user(sessionName)
+      category = user.categories.detect {|cat| cat.id == category_id }
+      category.expenses.each do |e|
         if e.category_id == category_id
           total_in_category += e.amount
         end
