@@ -1,6 +1,6 @@
   <h1>Current Monthly Budget Limits</h1>
 
-  <% if @budgets.empty? || @budgets.count(nil) > 0 %>
+  <% if @budgets.empty? %>
     <p>
     No Budgets Set<br/>
    </p>
@@ -14,17 +14,19 @@
         <th>Edit</th>
       <tr>
     <% @budgets.each do |b| %>
-      <tr>
-        <td><%= @categories.detect  {|cat| b.id == cat.id }.category_name %></td>
-        <td>$<%= '%.2f'% b.amount %></td>
-        <td><% if b.rollover %>
-            Yes
-            <% else %>
-            No
-            <% end %>
-          </td>
-        <td><a href="/budgets/<%= b.id %>/edit">Edit</a></td>
-      </tr>
+      <% if !b.nil? %>
+        <tr>
+          <td><%= @categories.detect  {|cat| b.id == cat.id }.category_name %></td>
+          <td>$<%= '%.2f'% b.amount %></td>
+          <td><% if b.rollover %>
+              Yes
+              <% else %>
+              No
+              <% end %>
+            </td>
+          <td><a href="/budgets/<%= b.id %>/edit">Edit</a></td>
+        </tr>
+      <% end %>
     <% end %>
     </table>
   <% end %>
