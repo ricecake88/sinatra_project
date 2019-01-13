@@ -21,7 +21,7 @@ class Expense < ActiveRecord::Base
         month = Helpers.current_month - 1
         year = current_year
       end
-      expenses_previous_month = self.specific_month_expenses(year, month, sessionName)
+      expenses = self.specific_month_expenses(year, month, sessionName)
       return expenses
     end
 
@@ -37,9 +37,8 @@ class Expense < ActiveRecord::Base
 
     def self.total_current_month_by_category(sessionName, category_id)
       total_in_category = 0
-      user = Helpers.current_user(sessionName)
-      category = user.categories.detect {|cat| cat.id == category_id }
-      category.expenses.each do |e|
+      expenses = self.specific_month_expenses(Helpers.current_year, Helpers.current_month, sessionName)
+      expenses.each do |e|
         if e.category_id == category_id
           total_in_category += e.amount
         end
@@ -49,7 +48,7 @@ class Expense < ActiveRecord::Base
 
     def self.total_previous_month_by_category(sessionName, category_id)
       prev_total_in_category = 0
-      expenses = Expense.expenses_previous_month(Helpers.current_year(), Helpers.current_month, sessionName)
+      expenses = self.expenses_previous_month(Helpers.current_year, Helpers.current_month, sessionName)
       expenses.each do |e|
         if e.category_id == category_id
           prev_total_in_category += e.amount
