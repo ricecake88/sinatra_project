@@ -16,7 +16,7 @@
     <% @budgets.each do |b| %>
       <% if !b.nil? %>
         <tr>
-          <td><%= @categories.detect  {|cat| b.id == cat.id }.category_name %></td>
+          <td><%= @categories.detect  {|cat| b.category_id == cat.id }.category_name %></td>
           <td>$<%= '%.2f'% b.amount %></td>
           <td><% if b.rollover %>
               Yes
