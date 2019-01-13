@@ -10,6 +10,7 @@ class BudgetController < ApplicationController
       user = Helpers.current_user(session)
       @budgets = user.budgets
       @categories = user.categories
+      binding.pry
       erb :'budgets/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -56,9 +57,10 @@ class BudgetController < ApplicationController
     end
   end
 
-  post '/budgets/new' do
+  post '/budgets/create' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       if cat_exists?(params[:budget]['category'])
         flash[:message] = "OOPS, already set a budget for this category. "
         redirect to "/budgets"
@@ -66,7 +68,6 @@ class BudgetController < ApplicationController
         flash[:message] = "Error, budget amount must not be negative."
         redirect to "/budgets"
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
-        user = Helpers.current_user(session)
         @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         @category = Category.find(params[:budget][:category].to_i)
         if @budget.save
