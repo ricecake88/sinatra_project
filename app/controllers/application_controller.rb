@@ -57,10 +57,10 @@ class ApplicationController < Sinatra::Base
     if Helpers.is_logged_in?(@sessionName) && !@user.nil?
       @budget_hashes = []
       @categories = @user.categories_sorted
-      @total_month_expense = Expense.total_current_month(session)
-      @expenses_current_month = Expense.specific_month_expenses(Helpers.current_year, Helpers.current_month, @sessionName)
+      @total_month_expense = @user.total_current_month
+      @expenses_current_month = @user.specific_month_expenses(Helpers.current_year, Helpers.current_month)
       @categories.each do |cat|
-        budget_hash = Budget.surplus_for_category(session, cat.id)
+        budget_hash = @user.surplus_for_category(cat.id)
         @budget_hashes << budget_hash
       end
       erb :account, :layout => :layout_loggedin
