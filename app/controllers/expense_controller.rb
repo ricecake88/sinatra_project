@@ -159,7 +159,7 @@ class ExpenseController < ApplicationController
           if new_entry?(params[:expense])
             if params[:expense]["date"] > Time.now.to_s(:db)
               flash[:message] = "Invalid date"
-              redirect to '/expense/add'
+              redirect to '/expense/new'
             else
               @expense = Expense.new(params[:expense])
               category = user.categories.detect { |cat| cat.id == params[:expense]["category_id"].to_i }
@@ -169,7 +169,7 @@ class ExpenseController < ApplicationController
                 flash[:message] = "Expense added"
                 redirect to "/expenses/#{@expense.id}"
               else
-                redirect to '/expenses/add'
+                redirect to '/expenses/new'
               end
             end
           else
