@@ -7,8 +7,8 @@ class CategoryController < ApplicationController
   get '/categories' do
     @sessionName = session
     @categories = []
-    if Helpers.is_logged_in?(session)
-      user = Helpers.current_user(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       Category.create_category_if_empty(@sessionName)
       @categories = user.categories_sorted
       erb :'categories/index', :layout => :layout_loggedin
@@ -20,7 +20,8 @@ class CategoryController < ApplicationController
 
   patch '/categories/edit' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       if !params[:category].nil?
         @categories = params[:category]
         @categories.each do |cat|
@@ -45,11 +46,11 @@ class CategoryController < ApplicationController
 
   post '/categories/new' do
     @sessionName = session
-    if Helpers.is_logged_in?(session) && !Helpers.current_user(session).nil?
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       if !params[:category_name].empty?
         if !exists_already?(params[:category_name])
           name = params[:category_name]
-          user = Helpers.current_user(session)
           category = Category.new(:category_name => params[:category_name])
           category.user = user
           if category.save

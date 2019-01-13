@@ -6,8 +6,8 @@ class BudgetController < ApplicationController
 
   get '/budgets' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
-      user = Helpers.current_user(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       @budgets = user.budgets
       @categories = user.categories
       binding.pry
@@ -21,8 +21,8 @@ class BudgetController < ApplicationController
 
   get '/budgets/new' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
-      user = Helpers.current_user(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       Category.create_category_if_empty(session)
       @categories = user.categories_sorted
       erb :'/budgets/new', :layout => :layout_loggedin
@@ -34,8 +34,8 @@ class BudgetController < ApplicationController
 
   get '/budgets/:id/edit' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
-      user = Helpers.current_user(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       @budget = Budget.find(params[:id])
       @categories = user.categories_sorted
       erb :'/budgets/edit', :layout => :layout_loggedin
@@ -47,7 +47,8 @@ class BudgetController < ApplicationController
 
   get '/budgets/:id' do
     @sessionName = session
-    if Helpers.is_logged_in?(session)
+    user = Helpers.current_user(session)
+    if Helpers.is_logged_in?(session) && !user.nil?
       @budget = Budget.find(params[:id])
       @categories = Helpers.current_user(session).categories
       erb :'/budgets/show', :layout => :layout_loggedin
@@ -87,7 +88,8 @@ class BudgetController < ApplicationController
 
 patch '/budgets/:id/edit' do
   @sessionName = session
-  if Helpers.is_logged_in?(session)
+  user = Helpers.current_user(session)
+  if Helpers.is_logged_in?(session) && !user.nil?
       @budget = Budget.find(params[:id])
       @budget.update(:amount => params[:amount], :rollover => params[:rollover])
       @budget.save
@@ -100,7 +102,8 @@ end
 
 delete '/budgets/:id/delete' do
   @sessionName = session
-  if Helpers.is_logged_in?(@sessionName)
+  user = Helpers.current_user(session)
+  if Helpers.is_logged_in?(session) && !user.nil?
     @budget = Budget.find(params[:id])
     if @budget
       @budget.delete
