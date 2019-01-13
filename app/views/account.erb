@@ -12,7 +12,7 @@
         </tr>
       <% end %>
     </table>
-    <p><b>Total Expenses: $<%= @total_month_expense %></b></p>
+    <p><b>Total Expenses: $<%='%.2f' % @total_month_expense %></b></p>
   <% else %>
     <p>No Expenses entered for this month</p>
   <% end %>
