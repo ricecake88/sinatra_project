@@ -10,7 +10,6 @@ class BudgetController < ApplicationController
     if Helpers.is_logged_in?(session) && !user.nil?
       @budgets = user.budgets
       @categories = user.categories
-      binding.pry
       erb :'budgets/index', :layout => :layout_loggedin
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
