@@ -6,7 +6,7 @@
 <b>Category</b>: <%= @categories.find {|cat| cat.id == @expense.category_id}.category_name %><br/>
 <b>Merchant</b>: <%= @expense.merchant %><br/>
 
-<form method="post" action="/expense/<%=@expense.id%>/delete">
+<form method="post" action="/expenses/<%=@expense.id%>/delete">
   <input id="hidden" type="hidden" name="_method" value="DELETE">
   <input type="submit" value="Delete Expense">
 </form>

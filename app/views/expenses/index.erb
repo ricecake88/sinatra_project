@@ -1,6 +1,6 @@
-  <h1>Expenses</h1>
+  <h1>Expenses (<%= @num_days %>)</h1>
 
-  <form method="get" action="/expenses/display/<%= @num_days %>">
+  <form method="get" action="/expenses">
     <select name="num_days">
       <option value="10">Last 10 Records</option>
       <option value="30">Last 30 Records</option>
@@ -13,7 +13,7 @@
   <% if !@expenses.empty? %>
     <table>
       <colgroup>
-        <col span="5">
+        <col span="7">
       </colgroup>
       <tr>
         <th>Date</th>
@@ -21,19 +21,25 @@
         <th>Merchant</th>
         <th>Description</th>
         <th>Category</th>
+        <th>Edit</th>
+        <th>Delete</th>
       </tr>
-      <% @expenses.each do |expense| %>
-          <tr>
-            <td><%= expense.date %></td>
-            <td>$<%= '%.2f' % expense.amount %></td>
-            <td><%= expense.merchant %></td>
-            <td><%= expense.description %></td>
-            <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
-         </tr>
-      <% end %>
+    <% @expenses.each do |expense| %>
+      <form method="get" action="/expenses/<%= expense.id %>/edit">
+        <input type="hidden" name="expense_id" value="<%= expense.id %>">
+        <tr>
+          <td><%= expense.date %></td>
+          <td>$<%= '%.2f' % expense.amount %></td>
+          <td><%= expense.merchant %></td>
+          <td><%= expense.description %></td>
+          <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
+          <td><input type="submit" name="Button" value="Edit"></td>
+          <td><input type="submit" name="Button" value="Delete"></td>
+        </tr>
+      </form>
+    <% end %>
     </table>
-  <% end %>
-
+<% end %>
   <p>
-    <a href="/expenses/new">Add a new expense</a> | <a href="/expenses/select">Edit expenses</a>
+    <a href="/expenses/new">Add a new expense</a>
   </p>
