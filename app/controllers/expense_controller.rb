@@ -49,7 +49,7 @@ class ExpenseController < ApplicationController
           if new_entry?(params[:expense])
             if params[:expense]["date"] > Time.now.to_s(:db)
               flash[:message] = "Invalid date"
-              redirect to '/expense/new'
+              redirect to '/expenses/new'
             else
               @expense = Expense.new(params[:expense])
               category = user.categories.detect { |cat| cat.id == params[:expense]["category_id"].to_i }
