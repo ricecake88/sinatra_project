@@ -78,8 +78,13 @@ class ExpenseController < ApplicationController
     if is_logged_in? && !user.nil?
       if !params[:id].nil?
         @expense = Expense.find(params[:id])
-        @categories = Category.sort_categories(session)
-        erb :'expenses/edit', :layout => :layout_loggedin
+        if @expense && user == Category.find(@xpense.category_id).user
+          @categories = Category.sort_categories(session)
+          erb :'expenses/edit', :layout => :layout_loggedin
+        else
+          flash[:message] = "You do not have permission to do that."
+          redirect to '/'
+        end
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -91,20 +96,25 @@ class ExpenseController < ApplicationController
     user = current_user
     if is_logged_in? && !user.nil?
       @expense = Expense.find(params[:id])
-      @id = params[:id]
-      if new_entry?(params[:expense])
-        if params[:expense]["date"] > Time.now.to_s(:db)
-          flash[:message] = "Invalid date"
-          redirect to "/expenses/select"
+      # check if expense being updated is owned by the user
+      if @expense && user == Category.find(@xpense.category_id).user
+        if new_entry?(params[:expense])
+          if params[:expense]["date"] > Time.now.to_s(:db)
+            flash[:message] = "Invalid date"
+            redirect to "/expenses/select"
+          else
+            @expense.update(params[:expense])
+            @expense.save
+            flash[:message] = "Expense Updated"
+            redirect to "/expenses/#{@expense.id}"
+          end
         else
-          @expense.update(params[:expense])
-          @expense.save
-          flash[:message] = "Expense Updated"
-          redirect to "/expenses/#{@expense.id}"
+          flash[:message] = "Entry already entered or invalid."
+          redirect '/expenses/select'
         end
       else
-        flash[:message] = "Entry already entered or invalid."
-        redirect '/expenses/select'
+        flash[:message] = "You do not have permission to do that."
+        redirect to '/'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -116,6 +126,7 @@ class ExpenseController < ApplicationController
     user = current_user
     if is_logged_in? && !user.nil?
       @expense = Expense.find_by_id(params[:id])
+      # check if expense being deleted is owned by the user
       if @expense && user == Category.find(@expense.category_id).user
         @expense.delete
         flash[:message] = "Expense Deleted"
