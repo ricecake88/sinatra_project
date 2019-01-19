@@ -5,11 +5,10 @@ class CategoryController < ApplicationController
   enable :sessions
 
   get '/categories' do
-    @sessionName = session
     @categories = []
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
-      Category.create_category_if_empty(@sessionName)
+    user = current_user
+    if is_logged_in? && !user.nil?
+      Category.create_category_if_empty(session)
       @categories = user.categories_sorted
       erb :'categories/index', :layout => :layout_loggedin
     else
@@ -19,9 +18,8 @@ class CategoryController < ApplicationController
   end
 
   patch '/categories/edit' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       if !params[:category].nil?
         @categories = params[:category]
         @categories.each do |cat|
@@ -45,9 +43,8 @@ class CategoryController < ApplicationController
   end
 
   post '/categories/new' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       if !params[:category_name].empty?
         if !exists_already?(params[:category_name])
           name = params[:category_name]
@@ -72,9 +69,8 @@ class CategoryController < ApplicationController
   end
 
   get '/categories/delete' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @categories = Category.sort_categories(session)
       erb :'/categories/delete', :layout => :layout_loggedin
     else
@@ -84,9 +80,8 @@ class CategoryController < ApplicationController
   end
 
   delete '/categories/delete' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in?  && !user.nil?
       @categories = params[:category]
       if !@categories.nil?
         @categories.each do |cat|
