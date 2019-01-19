@@ -5,9 +5,8 @@ class BudgetController < ApplicationController
   enable :sessions
 
   get '/budgets' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @budgets = user.budgets
       @categories = user.categories
       erb :'budgets/index', :layout => :layout_loggedin
@@ -19,9 +18,8 @@ class BudgetController < ApplicationController
   end
 
   get '/budgets/new' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       Category.create_category_if_empty(session)
       @categories = user.categories_sorted
       erb :'/budgets/new', :layout => :layout_loggedin
@@ -32,9 +30,8 @@ class BudgetController < ApplicationController
   end
 
   get '/budgets/:id/edit' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @budget = Budget.find(params[:id])
       @categories = user.categories_sorted
       erb :'/budgets/edit', :layout => :layout_loggedin
@@ -45,9 +42,8 @@ class BudgetController < ApplicationController
   end
 
   get '/budgets/:id' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @budget = Budget.find(params[:id])
       @categories = Helpers.current_user(session).categories
       erb :'/budgets/show', :layout => :layout_loggedin
@@ -58,9 +54,8 @@ class BudgetController < ApplicationController
   end
 
   post '/budgets/create' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       if cat_exists?(params[:budget]['category'])
         flash[:message] = "OOPS, already set a budget for this category. "
         redirect to "/budgets"
@@ -86,9 +81,8 @@ class BudgetController < ApplicationController
   end
 
 patch '/budgets/:id/edit' do
-  @sessionName = session
-  user = Helpers.current_user(session)
-  if Helpers.is_logged_in?(session) && !user.nil?
+  user = current_user
+  if is_logged_in? && !user.nil?
       @budget = Budget.find(params[:id])
       @budget.update(:amount => params[:amount], :rollover => params[:rollover])
       @budget.save
@@ -100,9 +94,8 @@ patch '/budgets/:id/edit' do
 end
 
 delete '/budgets/:id/delete' do
-  @sessionName = session
-  user = Helpers.current_user(session)
-  if Helpers.is_logged_in?(session) && !user.nil?
+  user = current_user
+  if is_logged_in? && !user.nil?
     @budget = Budget.find(params[:id])
     if @budget
       @budget.delete
