@@ -8,7 +8,7 @@ class ExpenseController < ApplicationController
 
   get '/expenses' do
     user = current_user
-    if Helpers.is_logged_in?(session) && !user.nil?
+    if is_logged_in? && !user.nil?
       Category.create_category_if_empty(session)
       if params[:num_days].nil?
         @num_days = 30
@@ -26,7 +26,7 @@ class ExpenseController < ApplicationController
 
   get '/expenses/new' do
     user = current_user
-    if Helpers.is_logged_in?(session) && !user.nil?
+    ifis_logged_in? && !user.nil?
       Category.create_category_if_empty(session)
       @categories = Category.sort_categories(session)
       erb :'expenses/new', :layout => :layout_loggedin
@@ -38,7 +38,7 @@ class ExpenseController < ApplicationController
 
   post '/expenses' do
     user = current_user
-    if Helpers.is_logged_in?(session) && !user.nil?
+    if is_logged_in?(session) && !user.nil?
       if (!params[:expense]["date"].empty? &&
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
