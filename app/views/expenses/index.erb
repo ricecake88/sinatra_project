@@ -25,8 +25,7 @@
         <th>Delete</th>
       </tr>
     <% @expenses.each do |expense| %>
-      <form method="get" action="/expenses/<%= expense.id %>/edit">
-        <input type="hidden" name="expense_id" value="<%= expense.id %>">
+        <form method="get" action="/expenses/<%= expense.id %>/edit">
         <tr>
           <td><%= expense.date %></td>
           <td>$<%= '%.2f' % expense.amount %></td>
@@ -34,9 +33,11 @@
           <td><%= expense.description %></td>
           <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
           <td><input type="submit" name="Button" value="Edit"></td>
+        </form>
+        <form method="get" action="/expenses/<%= expense.id %>/delete">
           <td><input type="submit" name="Button" value="Delete"></td>
+        </form>
         </tr>
-      </form>
     <% end %>
     </table>
 <% end %>

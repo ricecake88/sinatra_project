@@ -26,7 +26,7 @@ class ExpenseController < ApplicationController
 
   get '/expenses/new' do
     user = current_user
-    ifis_logged_in? && !user.nil?
+    if is_logged_in? && !user.nil?
       Category.create_category_if_empty(session)
       @categories = Category.sort_categories(session)
       erb :'expenses/new', :layout => :layout_loggedin
@@ -38,7 +38,7 @@ class ExpenseController < ApplicationController
 
   post '/expenses' do
     user = current_user
-    if is_logged_in?(session) && !user.nil?
+    if is_logged_in? && !user.nil?
       if (!params[:expense]["date"].empty? &&
           !params[:expense]["amount"].empty? &&
           !params[:expense]["description"].empty? &&
@@ -95,6 +95,17 @@ class ExpenseController < ApplicationController
     end
   end
 
+  get '/expenses/:id/delete' do
+      user = current_user
+      if is_logged_in? && !user.nil?
+        @expense = Expense.find_by_id(params[:id])
+        erb :'/expenses/delete', :layout => :layout_loggedin
+      else
+        flash[:message] = "Illegal action. Please log-in to access this page."
+        redirect to '/'
+      end
+    end
+
   patch '/expenses/:id' do
     user = current_user
     if is_logged_in? && !user.nil?
@@ -120,23 +131,11 @@ class ExpenseController < ApplicationController
     end
   end
 
-
-  get '/expenses/:id/delete' do
-      user = current_user
-      if is_logged_in? && !user.nil?
-        @expense = Expense.find_by_id(params[:id])
-        erb :"/expenses/delete/#{@expense.id}"
-      else
-        flash[:message] = "Illegal action. Please log-in to access this page."
-        redirect to '/'
-      end
-    end
-
   delete '/expenses/:id/delete' do
     user = current_user
     if is_logged_in? && !user.nil?
       @expense = Expense.find_by_id(params[:id])
-      if @expense && belongs_to?(@expense)
+      if @expense && user == Category.find(@expense.category_id).user
         @expense.delete
       end
       flash[:message] = "Expense Deleted"
@@ -166,20 +165,6 @@ class ExpenseController < ApplicationController
       if @matched_expense.nil?
         return true
       else
-        return false
-      end
-    end
-
-    def belongs_to?(expense)
-      @matched_expense = Expense.find_by(:id => expense['id'], :category_id => expense['category_id'])
-      if @matched_expense.nil?
-        return false
-      else
-        user.categories.each do |category|
-          if category.id == @matched_expense.category_id
-            return true
-          end
-        end
         return false
       end
     end
