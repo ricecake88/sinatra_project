@@ -52,9 +52,8 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/account' do
-    @sessionName = session
-    @user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(@sessionName) && !@user.nil?
+    @user = current_user
+    if is_logged_in? && !@user.nil?
       @budget_hashes = []
       @categories = @user.categories_sorted
       @total_month_expense = @user.total_current_month
@@ -92,5 +91,18 @@ class ApplicationController < Sinatra::Base
         true
       end
     end
+
+    def current_user
+        @user = User.find(session[:user_id])
+    end
+
+    def is_logged_in?
+      if session[:user_id].nil?
+        false
+      else
+        true
+      end
+    end
+
   end
 end

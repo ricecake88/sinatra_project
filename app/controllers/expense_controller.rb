@@ -5,11 +5,10 @@ class ExpenseController < ApplicationController
   enable :sessions
 
   set :public_folder, 'public'
+
   get '/expenses' do
-    @sessionName = session
-    user = Helpers.current_user(session)
+    user = current_user
     if Helpers.is_logged_in?(session) && !user.nil?
-      user = Helpers.current_user(@sessionName)
       Category.create_category_if_empty(session)
       if params[:num_days].nil?
         @num_days = 30
@@ -26,8 +25,7 @@ class ExpenseController < ApplicationController
   end
 
   get '/expenses/new' do
-    @sessionName = session
-    user = Helpers.current_user(session)
+    user = current_user
     if Helpers.is_logged_in?(session) && !user.nil?
       Category.create_category_if_empty(session)
       @categories = Category.sort_categories(session)
@@ -39,8 +37,7 @@ class ExpenseController < ApplicationController
   end
 
   post '/expenses' do
-    @sessionName = session
-    user = Helpers.current_user(session)
+    user = current_user
     if Helpers.is_logged_in?(session) && !user.nil?
       if (!params[:expense]["date"].empty? &&
           !params[:expense]["amount"].empty? &&
@@ -49,7 +46,7 @@ class ExpenseController < ApplicationController
           if new_entry?(params[:expense])
             if params[:expense]["date"] > Time.now.to_s(:db)
               flash[:message] = "Invalid date"
-              redirect to '/expense/add'
+              redirect to '/expense/new'
             else
               @expense = Expense.new(params[:expense])
               category = user.categories.detect { |cat| cat.id == params[:expense]["category_id"].to_i }
@@ -59,16 +56,16 @@ class ExpenseController < ApplicationController
                 flash[:message] = "Expense added"
                 redirect to "/expenses/#{@expense.id}"
               else
-                redirect to '/expenses/add'
+                redirect to '/expenses/new'
               end
             end
           else
             flash[:message] = "Already added"
-            redirect to '/expenses/add'
+            redirect to '/expenses/new'
           end
       else
         flash[:message] = "Missing Fields"
-        redirect to '/expenses/add'
+        redirect to '/expenses/new'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
@@ -77,16 +74,16 @@ class ExpenseController < ApplicationController
   end
 
   get '/expenses/:id/edit' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
-      if !params[:expense_id].nil?
-        @expense = Expense.find(params[:expense_id])
+    user = current_user
+    if is_logged_in? && !user.nil?
+      if !params[:id].nil?
+        @expense = Expense.find(params[:id])
         @categories = Category.sort_categories(session)
+        @id = params[:id]
         if params[:Button] == "Edit"
-          erb :"expenses/#{@id}/edit", :layout => :layout_loggedin
+          redirect to "expenses/#{@id}/edit", :layout => :layout_loggedin
         elsif params[:Button] == "Delete"
-          erb :"expenses/#{@id}/delete", :layout => :layout_loggedin
+          redirect to "expenses/#{@id}/delete", :layout => :layout_loggedin
         end
       else
         flash[:message] = "No Expense Selected"
@@ -99,9 +96,8 @@ class ExpenseController < ApplicationController
   end
 
   patch '/expenses/:id' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @expense = Expense.find(params[:id])
       @id = params[:id]
       if new_entry?(params[:expense])
@@ -124,12 +120,23 @@ class ExpenseController < ApplicationController
     end
   end
 
+
+  get '/expenses/:id/delete' do
+      user = current_user
+      if is_logged_in? && !user.nil?
+        @expense = Expense.find_by_id(params[:id])
+        erb :"/expenses/delete/#{@expense.id}"
+      else
+        flash[:message] = "Illegal action. Please log-in to access this page."
+        redirect to '/'
+      end
+    end
+
   delete '/expenses/:id/delete' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @expense = Expense.find_by_id(params[:id])
-      if @expense
+      if @expense && belongs_to?(@expense)
         @expense.delete
       end
       flash[:message] = "Expense Deleted"
@@ -141,9 +148,8 @@ class ExpenseController < ApplicationController
   end
 
   get '/expenses/:id' do
-    @sessionName = session
-    user = Helpers.current_user(session)
-    if Helpers.is_logged_in?(session) && !user.nil?
+    user = current_user
+    if is_logged_in? && !user.nil?
       @expense = Expense.find(params[:id])
       @categories = user.categories_sorted
       erb :'expenses/show', :layout => :layout_loggedin
@@ -160,6 +166,20 @@ class ExpenseController < ApplicationController
       if @matched_expense.nil?
         return true
       else
+        return false
+      end
+    end
+
+    def belongs_to?(expense)
+      @matched_expense = Expense.find_by(:id => expense['id'], :category_id => expense['category_id'])
+      if @matched_expense.nil?
+        return false
+      else
+        user.categories.each do |category|
+          if category.id == @matched_expense.category_id
+            return true
+          end
+        end
         return false
       end
     end
