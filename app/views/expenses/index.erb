@@ -32,10 +32,11 @@
           <td><%= expense.merchant %></td>
           <td><%= expense.description %></td>
           <td><%= @categories.find {|cat| cat.id == expense.category_id}.category_name %></td>
-          <td><input type="submit" name="Button" value="Edit"></td>
+          <td><input type="submit" value="Edit"></td>
         </form>
-        <form method="get" action="/expenses/<%= expense.id %>/delete">
-          <td><input type="submit" name="Button" value="Delete"></td>
+        <form method="post" action="/expenses/<%= expense.id %>">
+          <input id="hidden" type="hidden" name="_method" value="DELETE">
+          <td><input type="submit" value="Delete"></td>
         </form>
         </tr>
     <% end %>

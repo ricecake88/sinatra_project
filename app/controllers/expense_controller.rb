@@ -79,32 +79,13 @@ class ExpenseController < ApplicationController
       if !params[:id].nil?
         @expense = Expense.find(params[:id])
         @categories = Category.sort_categories(session)
-        @id = params[:id]
-        if params[:Button] == "Edit"
-          redirect to "expenses/#{@id}/edit", :layout => :layout_loggedin
-        elsif params[:Button] == "Delete"
-          redirect to "expenses/#{@id}/delete", :layout => :layout_loggedin
-        end
-      else
-        flash[:message] = "No Expense Selected"
-        redirect to '/expenses/select'
+        erb :'expenses/edit', :layout => :layout_loggedin
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
     end
   end
-
-  get '/expenses/:id/delete' do
-      user = current_user
-      if is_logged_in? && !user.nil?
-        @expense = Expense.find_by_id(params[:id])
-        erb :'/expenses/delete', :layout => :layout_loggedin
-      else
-        flash[:message] = "Illegal action. Please log-in to access this page."
-        redirect to '/'
-      end
-    end
 
   patch '/expenses/:id' do
     user = current_user
@@ -131,15 +112,18 @@ class ExpenseController < ApplicationController
     end
   end
 
-  delete '/expenses/:id/delete' do
+  delete '/expenses/:id' do
     user = current_user
     if is_logged_in? && !user.nil?
       @expense = Expense.find_by_id(params[:id])
       if @expense && user == Category.find(@expense.category_id).user
         @expense.delete
+        flash[:message] = "Expense Deleted"
+        redirect to '/expenses'
+      else
+        flash[:message] = "You do not have permission to do that."
+        redirect to '/'
       end
-      flash[:message] = "Expense Deleted"
-      redirect to '/expenses'
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'
