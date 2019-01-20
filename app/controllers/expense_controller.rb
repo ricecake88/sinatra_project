@@ -78,7 +78,7 @@ class ExpenseController < ApplicationController
     if is_logged_in? && !user.nil?
       if !params[:id].nil?
         @expense = Expense.find(params[:id])
-        if @expense && user == Category.find(@xpense.category_id).user
+        if !@expense.nil? && user == Category.find(@expense.category_id).user
           @categories = Category.sort_categories(session)
           erb :'expenses/edit', :layout => :layout_loggedin
         else
@@ -97,11 +97,11 @@ class ExpenseController < ApplicationController
     if is_logged_in? && !user.nil?
       @expense = Expense.find(params[:id])
       # check if expense being updated is owned by the user
-      if @expense && user == Category.find(@xpense.category_id).user
+      if !@expense.nil? && user == Category.find(@expense.category_id).user
         if new_entry?(params[:expense])
           if params[:expense]["date"] > Time.now.to_s(:db)
             flash[:message] = "Invalid date"
-            redirect to "/expenses/select"
+            redirect to '/expenses'
           else
             @expense.update(params[:expense])
             @expense.save
@@ -145,8 +145,13 @@ class ExpenseController < ApplicationController
     user = current_user
     if is_logged_in? && !user.nil?
       @expense = Expense.find(params[:id])
-      @categories = user.categories_sorted
-      erb :'expenses/show', :layout => :layout_loggedin
+      if !@expense.nil?
+        @categories = user.categories_sorted
+        erb :'expenses/show', :layout => :layout_loggedin
+      else
+        flash[:message] = "Expense not found."
+        redirect to '/expenses'
+      end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect to '/'

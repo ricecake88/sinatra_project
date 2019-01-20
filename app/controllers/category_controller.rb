@@ -24,12 +24,15 @@ class CategoryController < ApplicationController
         @categories = params[:category]
         @categories.each do |cat|
           category = Category.find(cat["id"])
-          if !category.nil?
+          if !category.nil? && user == category.user
             if cat["name"] != category.category_name
               category.update(:category_name => cat["name"])
               category.save
               flash[:message] = "Modified category"
             end
+          else
+            flash[:message] = "You do not have permission to do that."
+            redirect to '/', :layout => :layout_loggedin
           end
         end
       else
@@ -90,8 +93,11 @@ class CategoryController < ApplicationController
             set_category_to_default(expenses_current_category)
           end
           category = Category.find(cat["id"])
-          if !category.nil?
+          if !category.nil? && user == category.user
             category.delete
+          else
+            flash[:message] = "You do not have permission to do that."
+            redirect to '/', :layout => :layout_loggedin
           end
         end
       else
