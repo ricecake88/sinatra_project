@@ -1,8 +1,5 @@
-require 'rack-flash'
 
 class CategoryController < ApplicationController
-  use Rack::Flash
-  enable :sessions
 
   get '/categories' do
     @categories = []

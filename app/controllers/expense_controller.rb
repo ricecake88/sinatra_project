@@ -1,10 +1,8 @@
-require 'rack-flash'
-
 class ExpenseController < ApplicationController
-  use Rack::Flash
-  enable :sessions
 
-  set :public_folder, 'public'
+  before do
+    :redirect_if_not_logged_in
+  end
 
   get '/expenses' do
     user = current_user
@@ -76,9 +74,9 @@ class ExpenseController < ApplicationController
   get '/expenses/:id/edit' do
     user = current_user
     if is_logged_in? && !user.nil?
-      if !params[:id].nil?
+      if params[:id]
         @expense = Expense.find(params[:id])
-        if !@expense.nil? && user == Category.find(@expense.category_id).user
+        if user == @expense.category.user
           @categories = Category.sort_categories(session)
           erb :'expenses/edit', :layout => :layout_loggedin
         else
@@ -142,19 +140,14 @@ class ExpenseController < ApplicationController
   end
 
   get '/expenses/:id' do
-    user = current_user
-    if is_logged_in? && !user.nil?
-      @expense = Expense.find(params[:id])
-      if !@expense.nil?
-        @categories = user.categories_sorted
-        erb :'expenses/show', :layout => :layout_loggedin
-      else
-        flash[:message] = "Expense not found."
-        redirect to '/expenses'
-      end
+    #redirect_if_not_logged_in
+    @expense = Expense.find(params[:id])
+    if !@expense.nil?
+      @categories = current_user.categories_sorted
+      erb :'expenses/show', :layout => :layout_loggedin
     else
-      flash[:message] = "Illegal action. Please log-in to access this page."
-      redirect to '/'
+      flash[:message] = "Expense not found."
+      redirect to '/expenses'
     end
   end
 
@@ -162,11 +155,7 @@ class ExpenseController < ApplicationController
 
     def new_entry?(expense)
       @matched_expense = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'], :amount => expense[:amount], :merchant => expense[:merchant])
-      if @matched_expense.nil?
-        return true
-      else
-        return false
-      end
+      @matched_expense.nil?
     end
   end
 end

@@ -2,13 +2,16 @@ require_relative '../../config/environment'
 require 'rack-flash'
 
 class ApplicationController < Sinatra::Base
-  use Rack::Flash
-  enable :sessions
 
-  register Sinatra::ActiveRecordExtension
-  set :session_secret, "my_application_secret"
-  set :views, Proc.new { File.join(root, "../views/") }
-  set :public_folder, 'public'
+  configure do
+    use Rack::Flash
+    enable :sessions
+
+    register Sinatra::ActiveRecordExtension
+    set :session_secret, "my_application_secret"
+    set :views, Proc.new { File.join(root, "../views/") }
+    set :public_folder, 'public'
+  end
 
   get '/' do
     erb :'index'
@@ -93,16 +96,18 @@ class ApplicationController < Sinatra::Base
     end
 
     def current_user
-        @user = User.find(session[:user_id])
+        @current_user ||= User.find_by(:id => session[:user_id])
     end
 
     def is_logged_in?
-      if session[:user_id].nil?
-        false
-      else
-        true
-      end
+      !!current_user
     end
 
+    def redirect_if_not_logged_in
+      if !is_logged_in?
+        flash[:message] = "Illegal action. Please log-in to access this page."
+        redirect '/'
+      end
+    end
   end
 end

@@ -1,8 +1,4 @@
-require 'rack-flash'
-
 class BudgetController < ApplicationController
-  use Rack::Flash
-  enable :sessions
 
   get '/budgets' do
     user = current_user
