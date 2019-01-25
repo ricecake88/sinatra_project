@@ -95,6 +95,8 @@ class CategoryController < ApplicationController
           category = Category.find(cat["id"])
           if !category.nil? && user == category.user
             category.delete
+            flash[:message] = "Category Deleted"
+            redirect to '/categories'
           else
             flash[:message] = "You do not have permission to do that."
             redirect to '/', :layout => :layout_loggedin
@@ -102,12 +104,12 @@ class CategoryController < ApplicationController
         end
       else
         flash[:message] = "No categories selected."
+        redirect to '/categories'
       end
     else
       flash[:message] = "Illegal action. Please log-in to access this page."
       redirect '/'
     end
-    redirect to '/categories'
   end
 
   helpers do
