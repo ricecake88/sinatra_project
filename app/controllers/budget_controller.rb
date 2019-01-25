@@ -65,10 +65,13 @@ class BudgetController < ApplicationController
       elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
         @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
         @category = Category.find(params[:budget][:category].to_i)
-        if @budget.save
+        if @budget.save && user == Category.find(@budget.category_id).user
           @category.budget = @budget
           Budget.all << @budget
           redirect to "/budgets/#{@budget.id}"
+        else
+          flash[:message] = "You do not have permission to do that."
+          redirect to '/'
         end
       else
         flash[:message] = "Sorry, either the amount or category entered is empty"
@@ -85,8 +88,12 @@ patch '/budgets/:id/edit' do
   if is_logged_in? && !user.nil?
       @budget = Budget.find(params[:id])
       @budget.update(:amount => params[:amount], :rollover => params[:rollover])
-      @budget.save
-      redirect to '/budgets'
+      if @budget.save && user == Category.find(@budget.category_id).user
+        redirect to '/budgets'
+      else
+        flash[:message] = "You do not have permission to do that."
+        redirect to '/'
+      end
   else
     flash[:message] = "Illegal action. Please log-in to access this page."
     redirect '/'
@@ -97,11 +104,14 @@ delete '/budgets/:id/delete' do
   user = current_user
   if is_logged_in? && !user.nil?
     @budget = Budget.find(params[:id])
-    if @budget
+    if @budget && user == Category.find(@budget.category_id).user
       @budget.delete
+      flash[:message] = "Budget Deleted"
+      redirect to '/budgets'
+    else
+      flash[:message] = "You do not have permission to do that."
+      redirect to '/'
     end
-    flash[:message] = "Budget Deleted"
-    redirect to '/budgets'
   else
     flash[:message] = "Illegal action. Please log-in to access this page."
     redirect to '/'
