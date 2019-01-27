@@ -14,16 +14,12 @@ class CategoryController < ApplicationController
     if !params[:category].nil?
       @categories = params[:category]
       @categories.each do |cat|
-        category = Category.find(cat["id"])
-        if !category.nil? && current_user == category.user
-          if cat["name"] != category.category_name
-            category.update(:category_name => cat["name"])
-            category.save
-            flash[:message] = "Modified category"
-          end
-        else
-          flash[:message] = "You do not have permission to do that."
-          redirect to '/', :layout => :layout_loggedin
+        category = Category.find_by(:id => cat["id"])
+        redirect_if_not_valid_user_or_record(category)
+        if cat["name"] != category.category_name
+          category.update(:category_name => cat["name"])
+          category.save
+          flash[:message] = "Modified category"
         end
       end
     else
@@ -62,22 +58,18 @@ class CategoryController < ApplicationController
   delete '/categories/delete' do
     redirect_if_not_logged_in
     @categories = params[:category]
-    if !@categories.nil?
+    if @categories
       @categories.each do |cat|
         expenses_current_category = Expense.where(:category_id => cat["id"])
         if !expenses_current_category.empty?
           set_category_to_default(expenses_current_category)
         end
-        category = Category.find(cat["id"])
-        if !category.nil? && user == category.user
-          category.delete
-          flash[:message] = "Category Deleted"
-          redirect to '/categories'
-        else
-          flash[:message] = "You do not have permission to do that."
-          redirect to '/', :layout => :layout_loggedin
-        end
+        category = Category.find_by(:id => cat["id"])
+        redirect_if_not_valid_user_or_record(category)
+        category.delete
       end
+      flash[:message] = "Category or Categories Deleted."
+      redirect to '/categories'
     else
       flash[:message] = "No categories selected."
       redirect to '/categories'
@@ -106,7 +98,6 @@ class CategoryController < ApplicationController
         expense_row.update(:category_id => default_user_category_id)
         expense_row.save
       end
-
     end
 
   end
