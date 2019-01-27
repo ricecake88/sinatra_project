@@ -55,21 +55,16 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/account' do
-    @user = current_user
-    if is_logged_in? && !@user.nil?
-      @budget_hashes = []
-      @categories = @user.categories_sorted
-      @total_month_expense = @user.total_current_month
-      @expenses_current_month = @user.specific_month_expenses(Helpers.current_year, Helpers.current_month)
-      @categories.each do |cat|
-        budget_hash = @user.surplus_for_category(cat.id)
-        @budget_hashes << budget_hash
-      end
-      erb :account, :layout => :layout_loggedin
-    else
-      flash[:message] = "Sorry you are not logged in."
-      redirect '/'
+    redirect_if_not_logged_in
+    @budget_hashes = []
+    @categories = @user.categories_sorted
+    @total_month_expense = @user.total_current_month
+    @expenses_current_month = @user.specific_month_expenses(Helpers.current_year, Helpers.current_month)
+    @categories.each do |cat|
+      budget_hash = @user.surplus_for_category(cat.id)
+      @budget_hashes << budget_hash
     end
+    erb :account, :layout => :layout_loggedin
   end
 
   get '/logout' do
@@ -79,11 +74,7 @@ class ApplicationController < Sinatra::Base
 
   helpers do
     def username_exists?(username)
-      if (User.find_by(:username => username)).nil?
-        false
-      else
-        true
-      end
+      !User.find_by(:username => username).nil?
     end
 
     def validate_user(username)
