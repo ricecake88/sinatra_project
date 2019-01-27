@@ -58,9 +58,9 @@ class ApplicationController < Sinatra::Base
     redirect_if_not_logged_in
     @user = current_user
     @budget_hashes = []
-    @categories = @user.categories_sorted
-    @total_month_expense = @user.total_current_month
-    @expenses_current_month = @user.specific_month_expenses(Helpers.current_year, Helpers.current_month)
+    @categories = current_user.categories_sorted
+    @total_month_expense = current_user.total_current_month
+    @expenses_current_month = current_user.specific_month_expenses(Helpers.current_year, Helpers.current_month)
     @categories.each do |cat|
       budget_hash = @user.surplus_for_category(cat.id)
       @budget_hashes << budget_hash
@@ -94,6 +94,21 @@ class ApplicationController < Sinatra::Base
     def redirect_if_not_logged_in
       if !is_logged_in?
         flash[:message] = "Illegal action. Please log-in to access this page."
+        redirect '/'
+      end
+    end
+
+    # record must be of one of the types, otherwise it is implied that it does
+    # not exist and will return false. If it does exist, it validates the
+    # user is authorized to make a change to the record
+    def redirect_if_not_valid_user_or_record(record)
+      valid = false
+      if ((record.class == Budget || record.class == Expense) && record.category.user == current_user) ||
+         (record.class == Category && record.user == current_user)
+        valid = true
+      end
+      if !valid
+        flash[:message] = "You do not have permission to do that."
         redirect '/'
       end
     end

@@ -16,16 +16,10 @@ class BudgetController < ApplicationController
 
   get '/budgets/:id/edit' do
     redirect_if_not_logged_in
-    @budget = Budget.find(params[:id])
+    @budget = Budget.find_by(:id => params[:id])
+    redirect_if_not_valid_user_or_record(@budget)
     @categories = current_user.categories_sorted
     erb :'/budgets/edit', :layout => :layout_loggedin
-  end
-
-  get '/budgets/:id' do
-    redirect_if_not_logged_in
-    @budget = Budget.find(params[:id])
-    @categories = Helpers.current_user(session).categories
-    erb :'/budgets/show', :layout => :layout_loggedin
   end
 
   post '/budgets/create' do
@@ -38,9 +32,8 @@ class BudgetController < ApplicationController
       redirect to "/budgets"
     elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
       @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
-      @category = Category.find(params[:budget][:category].to_i)
-      if current_user == Category.find(@budget.category_id).user && @budget.save
-        @category.budget = @budget
+      if @budget.save
+        @budget.category.budget = @budget
         Budget.all << @budget
         redirect to "/budgets/#{@budget.id}"
       else
@@ -55,27 +48,20 @@ class BudgetController < ApplicationController
 
 patch '/budgets/:id/edit' do
   redirect_if_not_logged_in
-  @budget = Budget.find(params[:id])
+  @budget = Budget.find_by(:id => params[:id])
+  redirect_if_not_valid_user_or_record(@budget)
   @budget.update(:amount => params[:amount], :rollover => params[:rollover])
-  if current_user == Category.find(@budget.category_id).user && @budget.save
-    redirect to '/budgets'
-  else
-    flash[:message] = "You do not have permission to do that."
-    redirect to '/'
-  end
+  @budget.save
+  redirect to '/budgets'
 end
 
 delete '/budgets/:id/delete' do
   redirect_if_not_logged_in
-  @budget = Budget.find(params[:id])
-  if @budget && current_user == Category.find(@budget.category_id).user
-    @budget.delete
-    flash[:message] = "Budget Deleted"
-    redirect to '/budgets'
-  else
-    flash[:message] = "You do not have permission to do that."
-    redirect to '/'
-  end
+  @budget = Budget.find_by(:id => params[:id])
+  redirect_if_not_valid_user_or_record(@budget)
+  @budget.delete
+  flash[:message] = "Budget Deleted"
+  redirect to '/budgets'
 end
 
   helpers do
