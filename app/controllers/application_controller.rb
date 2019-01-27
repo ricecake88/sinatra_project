@@ -98,6 +98,13 @@ class ApplicationController < Sinatra::Base
       end
     end
 
+    def redirect_if_not_valid_record(record)
+      if record.nil?
+        flash[:message] = "Record not found."
+        redirect '/account'
+      end
+    end
+
     # record must be of one of the types, otherwise it is implied that it does
     # not exist and will return false. If it does exist, it validates the
     # user is authorized to make a change to the record
