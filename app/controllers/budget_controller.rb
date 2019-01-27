@@ -22,6 +22,14 @@ class BudgetController < ApplicationController
     erb :'/budgets/edit', :layout => :layout_loggedin
   end
 
+  get '/budgets/:id' do
+    redirect_if_not_logged_in
+    @budget = Budget.find_by(:id => params[:id])
+    redirect_if_not_valid_user_or_record(@budget)
+    @categories = Helpers.current_user(session).categories
+    erb :'/budgets/show', :layout => :layout_loggedin
+  end
+
   post '/budgets/create' do
     redirect_if_not_logged_in
     if cat_exists?(params[:budget]['category'])
