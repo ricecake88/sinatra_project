@@ -56,6 +56,7 @@ class ApplicationController < Sinatra::Base
 
   get '/account' do
     redirect_if_not_logged_in
+    @user = current_user
     @budget_hashes = []
     @categories = @user.categories_sorted
     @total_month_expense = @user.total_current_month
