@@ -14,6 +14,7 @@ class CategoryController < ApplicationController
     if !params[:category].nil?
       @categories = params[:category]
       @categories.each do |cat|
+        redirect_if_expense_category(cat["id"])
         category = Category.find_by(:id => cat["id"])
         redirect_if_not_valid_user_or_record(category)
         if cat["name"] != category.category_name
@@ -60,20 +61,20 @@ class CategoryController < ApplicationController
     @categories = params[:category]
     if @categories
       @categories.each do |cat|
-        expenses_current_category = Expense.where(:category_id => cat["id"])
-        if !expenses_current_category.empty?
-          set_category_to_default(expenses_current_category)
+        redirect_if_expense_category(cat["id"])
+        expenses_in_current_category = Expense.where(:category_id => cat["id"])
+        if !expenses_in_current_category.empty?
+          set_category_to_default(expenses_in_current_category)
         end
         category = Category.find_by(:id => cat["id"])
         redirect_if_not_valid_user_or_record(category)
         category.delete
       end
       flash[:message] = "Category or Categories Deleted."
-      redirect to '/categories'
     else
       flash[:message] = "No categories selected."
-      redirect to '/categories'
     end
+    redirect to '/categories'
   end
 
   helpers do
@@ -100,6 +101,13 @@ class CategoryController < ApplicationController
       end
     end
 
-  end
+    def redirect_if_expense_category(id)
+      if Category.find_by(:id => id, :category_name => "Expenses")
+        flash[:message] = "You do not have permission to do that."
+        redirect '/'
+      end
+    end
+
+  end #end helpers
 
 end
