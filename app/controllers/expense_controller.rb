@@ -46,7 +46,7 @@ class ExpenseController < ApplicationController
 
   get '/expenses/:id/edit' do
     redirect_if_not_logged_in
-    @expense = Expense.find(params[:id])
+    @expense = Expense.find_by(:id => params[:id])
     redirect_if_not_valid_user_or_record(@expense)
     @categories = current_user.categories_sorted
     erb :'expenses/edit', :layout => :layout_loggedin
@@ -54,7 +54,7 @@ class ExpenseController < ApplicationController
 
   patch '/expenses/:id' do
     redirect_if_not_logged_in
-    @expense = Expense.find(params[:id])
+    @expense = Expense.find_by(:id => params[:id])
     # check if expense being updated is owned by the user
     redirect_if_not_valid_user_or_record(@expense)
     if new_entry?(params[:expense])
