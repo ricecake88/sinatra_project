@@ -24,13 +24,10 @@ class ApplicationController < Sinatra::Base
   post '/signup' do
     if params[:username].empty? || params[:password].empty?
       flash[:message] = "Sorry, username or password field missing."
-      redirect '/signup'
     elsif invalid_username(params[:username])
-      flash[:message] = 'Invalid Username. Please Enter a valid username with length of 4 to 16 lowercase letters and numbers only with "_" allowed. '
-      redirect '/signup'
+      flash[:message] = "Invalid Username. Please Enter a valid username with length of 4 to 16 lowercase letters and numbers only with "_" allowed."
     elsif username_exists?(params[:username])
       flash[:message] = "Username already exists."
-      redirect '/signup'
     else
       @user = User.new(username: params[:username], password: params[:password])
       if @user.save
@@ -38,9 +35,9 @@ class ApplicationController < Sinatra::Base
         redirect '/'
       else
         flash[:message] = "Unknown error. Please try again."
-        redirect '/signup'
       end
     end
+    redirect '/signup'
   end
 
   post '/login' do
