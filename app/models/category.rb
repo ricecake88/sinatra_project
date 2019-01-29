@@ -13,8 +13,4 @@ class Category < ActiveRecord::Base
     end
   end
 
-#  def self.sort_categories(current_user)
-#    categories = current_user.categories
-#    categories.sort_by &:category_name
-#  end
 end
