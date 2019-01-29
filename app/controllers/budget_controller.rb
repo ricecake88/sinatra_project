@@ -17,7 +17,7 @@ class BudgetController < ApplicationController
   get '/budgets/:id/edit' do
     redirect_if_not_logged_in
     @budget = Budget.find_by(:id => params[:id])
-    redirect_if_not_valid_record(@budget)
+    redirect_if_not_valid_record(@budget, "Budget")
     @categories = current_user.categories_sorted
     erb :'/budgets/edit', :layout => :layout_loggedin
   end
@@ -25,7 +25,7 @@ class BudgetController < ApplicationController
   get '/budgets/:id' do
     redirect_if_not_logged_in
     @budget = Budget.find_by(:id => params[:id])
-    redirect_if_not_valid_record(@budget)
+    redirect_if_not_valid_record(@budget, "Budget")
     @categories = Helpers.current_user(session).categories
     erb :'/budgets/show', :layout => :layout_loggedin
   end
