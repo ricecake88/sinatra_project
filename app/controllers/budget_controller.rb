@@ -9,7 +9,7 @@ class BudgetController < ApplicationController
 
   get '/budgets/new' do
     redirect_if_not_logged_in
-    Category.create_category_if_empty(session)
+    Category.create_category_if_empty(current_user)
     @categories = current_user.categories_sorted
     erb :'/budgets/new', :layout => :layout_loggedin
   end
@@ -26,51 +26,45 @@ class BudgetController < ApplicationController
     redirect_if_not_logged_in
     @budget = Budget.find_by(:id => params[:id])
     redirect_if_not_valid_record(@budget, "Budget")
-    @categories = Helpers.current_user(session).categories
+    @categories = current_user.categories_sorted
     erb :'/budgets/show', :layout => :layout_loggedin
   end
 
   post '/budgets/create' do
     redirect_if_not_logged_in
-    if cat_exists?(params[:budget]['category'])
+    if params[:budget].has_value?("")
+      flash[:message] = "Sorry, either the amount or category entered is empty"
+    elsif cat_exists?(params[:budget]['category'])
       flash[:message] = "OOPS, already set a budget for this category. "
-      redirect to "/budgets"
     elsif params[:budget]["amount"].to_d < 0
       flash[:message] = "Error, budget amount must not be negative."
-      redirect to "/budgets"
     elsif !params[:budget]["amount"].empty? && !params[:budget]["category"].empty?
       @budget = Budget.new(:category_id => params[:budget]["category"].to_i, :amount => params[:budget]["amount"], :rollover => params[:budget]["rollover"])
       if @budget.save
-        @budget.category.budget = @budget
         Budget.all << @budget
         redirect to "/budgets/#{@budget.id}"
-      else
-        flash[:message] = "You do not have permission to do that."
-        redirect to '/'
       end
-    else
-      flash[:message] = "Sorry, either the amount or category entered is empty"
-      redirect to "/budgets/add"
     end
+    redirect to "/budgets/new"
   end
 
-patch '/budgets/:id/edit' do
-  redirect_if_not_logged_in
-  @budget = Budget.find_by(:id => params[:id])
-  redirect_if_not_valid_user_or_record(@budget)
-  @budget.update(:amount => params[:amount], :rollover => params[:rollover])
-  @budget.save
-  redirect to '/budgets'
-end
+  patch '/budgets/:id/edit' do
+    redirect_if_not_logged_in
+    @budget = Budget.find_by(:id => params[:id])
+    redirect_if_not_valid_user_or_record(@budget)
+    @budget.update(:amount => params[:amount], :rollover => params[:rollover])
+    @budget.save
+    redirect to '/budgets'
+  end
 
-delete '/budgets/:id/delete' do
-  redirect_if_not_logged_in
-  @budget = Budget.find_by(:id => params[:id])
-  redirect_if_not_valid_user_or_record(@budget)
-  @budget.delete
-  flash[:message] = "Budget Deleted"
-  redirect to '/budgets'
-end
+  delete '/budgets/:id/delete' do
+    redirect_if_not_logged_in
+    @budget = Budget.find_by(:id => params[:id])
+    redirect_if_not_valid_user_or_record(@budget)
+    @budget.delete
+    flash[:message] = "Budget Deleted"
+    redirect to '/budgets'
+  end
 
   helpers do
     def cat_exists?(cat_id)
