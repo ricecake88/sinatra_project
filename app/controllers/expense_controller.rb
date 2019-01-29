@@ -25,79 +25,47 @@ class ExpenseController < ApplicationController
   end
 
   post '/expenses' do
-    #user = current_user
-    #if is_logged_in? && !user.nil?
     redirect_if_not_logged_in
-    if (!params[:expense]["date"].empty? &&
-        !params[:expense]["amount"].empty? &&
-        !params[:expense]["description"].empty? &&
-        !params[:expense]["merchant"].empty?)
+    if !params[:expense].has_value?("")
         if new_entry?(params[:expense])
           redirect_if_invalid_date(params[:expense])
-          #if params[:expense]["date"] > Time.now.to_s(:db)
-          #  flash[:message] = "Invalid date"
-          #  redirect to '/expenses/new'
-          #else
-            @expense = Expense.new(params[:expense])
-            category = current_user.categories.detect { |cat| cat.id == params[:expense]["category_id"].to_i }
-            if @expense.save
-              @expense.category = category
-              Expense.all << @expense
-              flash[:message] = "Expense added"
-              redirect to "/expenses/#{@expense.id}"
-            else
-              redirect to '/expenses/new'
-            end
-          #end
+          @expense = Expense.new(params[:expense])
+          if @expense.save
+            Expense.all << @expense
+            flash[:message] = "Expense added"
+            redirect to "/expenses/#{@expense.id}"
+          end
         else
           flash[:message] = "Already added"
-          redirect to '/expenses/new'
         end
     else
       flash[:message] = "Missing Fields"
-      redirect to '/expenses/new'
     end
-    #else
-    #  flash[:message] = "Illegal action. Please log-in to access this page."
-    #  redirect to '/'
-    #end
+    redirect to '/expenses/new'
   end
 
   get '/expenses/:id/edit' do
     redirect_if_not_logged_in
     @expense = Expense.find(params[:id])
-    if current_user == @expense.category.user
-      @categories = Category.sort_categories(session)
-      erb :'expenses/edit', :layout => :layout_loggedin
-    else
-      flash[:message] = "You do not have permission to do that."
-      redirect to '/'
-    end
+    redirect_if_not_valid_user_or_record(@expense)
+    @categories = Category.sort_categories(session)
+    erb :'expenses/edit', :layout => :layout_loggedin
   end
 
   patch '/expenses/:id' do
     redirect_if_not_logged_in
     @expense = Expense.find(params[:id])
     # check if expense being updated is owned by the user
-    if !@expense.nil? && current_user == @expense.category.user
-      if new_entry?(params[:expense])
-        redirect_if_invalid_date(params[:expense])
-        #if params[:expense]["date"] > Time.now.to_s(:db)
-        #  flash[:message] = "Invalid date"
-        #  redirect to '/expenses'
-        #else
-          @expense.update(params[:expense])
-          @expense.save
-          flash[:message] = "Expense Updated"
-          redirect to "/expenses/#{@expense.id}"
-        #end
-      else
-        flash[:message] = "Entry already entered or invalid."
-        redirect '/expenses/select'
-      end
+    redirect_if_not_valid_user_or_record(@expense)
+    if new_entry?(params[:expense])
+      redirect_if_invalid_date(params[:expense])
+      @expense.update(params[:expense])
+      @expense.save
+      flash[:message] = "Expense Updated"
+      redirect to "/expenses/#{@expense.id}"
     else
-      flash[:message] = "You do not have permission to do that."
-      redirect to '/'
+      flash[:message] = "Entry already entered or invalid."
+      redirect '/expenses/select'
     end
   end
 
@@ -105,26 +73,18 @@ class ExpenseController < ApplicationController
     redirect_if_not_logged_in
     @expense = Expense.find_by_id(params[:id])
     # check if expense being deleted is owned by the user
-    if @expense && current_user == @expense.category.user
-      @expense.delete
-      flash[:message] = "Expense Deleted"
-      redirect to '/expenses'
-    else
-      flash[:message] = "You do not have permission to do that."
-      redirect to '/'
-    end
+    redirect_if_not_valid_user_or_record(@expense)
+    @expense.delete
+    flash[:message] = "Expense Deleted"
+    redirect to '/expenses'
   end
 
   get '/expenses/:id' do
     redirect_if_not_logged_in
     @expense = Expense.find_by(:id=>params[:id])
-    if @expense
-      @categories = current_user.categories_sorted
-      erb :'expenses/show', :layout => :layout_loggedin
-    else
-      flash[:message] = "Expense not found."
-      redirect to '/expenses'
-    end
+    redirect_if_not_valid_record(@expense, "Expense")
+    @categories = current_user.categories_sorted
+    erb :'expenses/show', :layout => :layout_loggedin
   end
 
   helpers do
