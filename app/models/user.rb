@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
     expenses = self.expenses.select {
       |e| e.date.strftime("%m").to_i == desired_month && e.date.strftime("%Y").to_i
     }
+    expenses = expenses.sort_by(&:date)
     return expenses
   end
 
