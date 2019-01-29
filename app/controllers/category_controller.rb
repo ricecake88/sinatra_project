@@ -4,7 +4,7 @@ class CategoryController < ApplicationController
   get '/categories' do
     @categories = []
     redirect_if_not_logged_in
-    Category.create_category_if_empty(session)
+    Category.create_category_if_empty(current_user)
     @categories = current_user.categories_sorted
     erb :'categories/index', :layout => :layout_loggedin
   end
@@ -51,7 +51,7 @@ class CategoryController < ApplicationController
 
   get '/categories/delete' do
     redirect_if_not_logged_in
-    @categories = Category.sort_categories(session)
+    @categories = current_user.categories_sorted
     erb :'/categories/delete', :layout => :layout_loggedin
   end
 
@@ -83,7 +83,7 @@ class CategoryController < ApplicationController
     end
 
     def set_category_to_default(expenses)
-      @categories = Helpers.current_user(session).categories
+      @categories = current_user.categories
       default_user_category_id = 0
 
       @categories.each do |cat|

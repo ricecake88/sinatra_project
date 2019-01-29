@@ -6,21 +6,21 @@ class ExpenseController < ApplicationController
 
   get '/expenses' do
     redirect_if_not_logged_in
-    Category.create_category_if_empty(session)
+    Category.create_category_if_empty(current_user)
     if params[:num_days].nil?
       @num_days = 30
     else
       @num_days = params[:num_days].to_i
     end
-    @categories = Category.sort_categories(session)
+    @categories = current_user.categories_sorted
     @expenses = current_user.expenses.sort_by(&:date).last(@num_days)
     erb :'expenses/index', :layout => :layout_loggedin
   end
 
   get '/expenses/new' do
     redirect_if_not_logged_in
-    Category.create_category_if_empty(session)
-    @categories = Category.sort_categories(session)
+    Category.create_category_if_empty(current_user)
+    @categories = current_user.categories_sorted
     erb :'expenses/new', :layout => :layout_loggedin
   end
 
@@ -48,7 +48,7 @@ class ExpenseController < ApplicationController
     redirect_if_not_logged_in
     @expense = Expense.find(params[:id])
     redirect_if_not_valid_user_or_record(@expense)
-    @categories = Category.sort_categories(session)
+    @categories = current_user.categories_sorted
     erb :'expenses/edit', :layout => :layout_loggedin
   end
 
