@@ -12,7 +12,7 @@ class ExpenseController < ApplicationController
     else
       @num_days = params[:num_days].to_i
     end
-    @categories = current_user.categories_sorted
+    #@categories = current_user.categories_sorted
     @expenses = current_user.expenses.sort_by(&:date).last(@num_days)
     erb :'expenses/index', :layout => :layout_loggedin
   end
@@ -20,7 +20,7 @@ class ExpenseController < ApplicationController
   get '/expenses/new' do
     redirect_if_not_logged_in
     Category.create_category_if_empty(current_user)
-    @categories = current_user.categories_sorted
+    #@categories = current_user.categories_sorted
     erb :'expenses/new', :layout => :layout_loggedin
   end
 
@@ -65,7 +65,7 @@ class ExpenseController < ApplicationController
       redirect to "/expenses/#{@expense.id}"
     else
       flash[:message] = "Entry already entered or invalid."
-      redirect '/expenses/select'
+      redirect '/expenses'
     end
   end
 
@@ -83,7 +83,7 @@ class ExpenseController < ApplicationController
     redirect_if_not_logged_in
     @expense = Expense.find_by(:id=>params[:id])
     redirect_if_not_valid_record(@expense, "Expense")
-    @categories = current_user.categories_sorted
+    #@categories = current_user.categories_sorted
     erb :'expenses/show', :layout => :layout_loggedin
   end
 
