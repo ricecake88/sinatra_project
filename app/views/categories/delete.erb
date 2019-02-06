@@ -6,7 +6,7 @@
   <p>
     <form method="post" action="/categories/delete">
       &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray">Expenses</span><br/>
-      <% @categories.each do |cat| %>
+      <% current_user.categories_sorted.each do |cat| %>
         <% if cat.category_name != "Expenses" %>
           <input type="checkbox" id="<%= cat.id %>" value="<%= cat.id %>" name="category[][id]"><%= cat.category_name %><br/>
         <% end %>

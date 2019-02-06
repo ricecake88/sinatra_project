@@ -5,7 +5,7 @@
   <form method="post" action="/categories/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
     <p>
-    <% @categories.each do |cat|%>
+    <% current_user.categories_sorted.each do |cat|%>
       <% if cat.category_name == "Expenses" %>
         <span style="color:gray">Expenses (Default)</span><br/>
       <% else %>
