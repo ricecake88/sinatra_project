@@ -2,10 +2,10 @@
 class CategoryController < ApplicationController
 
   get '/categories' do
-    @categories = []
+    #@categories = []
     redirect_if_not_logged_in
     Category.create_category_if_empty(current_user)
-    @categories = current_user.categories_sorted
+   #@categories = current_user.categories_sorted
     erb :'categories/index', :layout => :layout_loggedin
   end
 
