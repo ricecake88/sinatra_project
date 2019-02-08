@@ -48,7 +48,7 @@ class ExpenseController < ApplicationController
     redirect_if_not_logged_in
     @expense = Expense.find_by(:id => params[:id])
     redirect_if_not_valid_user_or_record(@expense)
-    @categories = current_user.categories_sorted
+    #@categories = current_user.categories_sorted
     erb :'expenses/edit', :layout => :layout_loggedin
   end
 
@@ -71,10 +71,10 @@ class ExpenseController < ApplicationController
 
   delete '/expenses/:id' do
     redirect_if_not_logged_in
-    @expense = Expense.find_by_id(params[:id])
+    expense = Expense.find_by_id(params[:id])
     # check if expense being deleted is owned by the user
-    redirect_if_not_valid_user_or_record(@expense)
-    @expense.delete
+    redirect_if_not_valid_user_or_record(expense)
+    expense.delete
     flash[:message] = "Expense Deleted"
     redirect to '/expenses'
   end
@@ -90,8 +90,8 @@ class ExpenseController < ApplicationController
   helpers do
 
     def new_entry?(expense)
-      @matched_expense = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'], :amount => expense[:amount], :merchant => expense[:merchant])
-      @matched_expense.nil?
+      matched_expense = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'], :amount => expense[:amount], :merchant => expense[:merchant])
+      matched_expense.nil?
     end
 
     def redirect_if_invalid_date(expense)
