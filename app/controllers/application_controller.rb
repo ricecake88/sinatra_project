@@ -96,12 +96,12 @@ class ApplicationController < Sinatra::Base
       end
     end
 
-    def redirect_if_not_valid_record(record, type)
-      if record.nil?
-        flash[:message] = "#{type} not found."
-        redirect "/#{type.downcase}s"
-      end
-    end
+  #  def redirect_if_not_valid_record(record, type)
+#      if record.nil?
+#        flash[:message] = "#{type} not found."
+#        redirect "/#{type.downcase}s"
+#      end
+#    end
 
     # record must be of one of the types, otherwise it is implied that it does
     # not exist and will return false. If it does exist, it validates the
