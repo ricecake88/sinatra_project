@@ -2,7 +2,7 @@
 
   <form method="post" action="/budgets/create">
     <select name="budget[category]">
-      <% @categories.each do |cat| %>
+      <% current_user.categories_sorted.each do |cat| %>
         <option value="<%= cat.id %>"><%= cat.category_name %></option>
       <% end %>
     </select>

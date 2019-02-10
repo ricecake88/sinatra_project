@@ -2,14 +2,14 @@
 
   <form method="post" action="/budgets/<%= @budget.id %>/edit">
     <input id="hidden" type="hidden" name="_method" value="patch">
-    You are editing the budget for '<%= @categories.find {|c| c.id == @budget.category_id}.category_name %>'<br/>
+    You are editing the budget for '<%= current_user.categories.find {|c| c.id == @budget.category_id}.category_name %>'<br/>
 
     <label for="amount">Amount:</label>
-    $<input type="number" step="any" name="amount" value="<%= '%.2f' % @budget.amount %>"><br/>
+    $<input type="number" step="any" name="budget[amount]" value="<%= '%.2f' % @budget.amount %>"><br/>
 
     <label for="rollover">Rollover?<label>
-    <input type="radio" name="rollover" value=true <%= "checked" if @budget.rollover %>>Yes
-    <input type="radio" name="rollover" value=false <%= "checked" if !@budget.rollover %>>No<br/>
+    <input type="radio" name="budget[rollover]" value=true <%= "checked" if @budget.rollover %>>Yes
+    <input type="radio" name="budget[rollover]" value=false <%= "checked" if !@budget.rollover %>>No<br/>
 
     <input type="submit" value="Update" name="Submit">
   </form>
