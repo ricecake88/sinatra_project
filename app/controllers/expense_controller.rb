@@ -18,6 +18,13 @@ class ExpenseController < ApplicationController
     erb :'expenses/new', :layout => :layout_loggedin
   end
 
+  get '/expenses/:id' do
+    redirect_if_not_logged_in
+    @expense = Expense.find_by(:id=>params[:id])
+    redirect_if_not_valid_user_or_record(@expense)
+    erb :'expenses/show', :layout => :layout_loggedin
+  end
+
   post '/expenses' do
     redirect_if_not_logged_in
     redirect_if_expense_invalid(params[:expense], '/expenses/new')
@@ -57,12 +64,7 @@ class ExpenseController < ApplicationController
     redirect to '/expenses'
   end
 
-  get '/expenses/:id' do
-    redirect_if_not_logged_in
-    @expense = Expense.find_by(:id=>params[:id])
-    redirect_if_not_valid_record(@expense, "Expense")
-    erb :'expenses/show', :layout => :layout_loggedin
-  end
+
 
   helpers do
 
