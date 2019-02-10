@@ -1,9 +1,5 @@
 class ExpenseController < ApplicationController
 
-  before do
-    #redirect_if_not_logged_in
-  end
-
   get '/expenses' do
     redirect_if_not_logged_in
     Category.create_category_if_empty(current_user)
@@ -12,7 +8,6 @@ class ExpenseController < ApplicationController
     else
       @num_days = params[:num_days].to_i
     end
-    #@categories = current_user.categories_sorted
     @expenses = current_user.expenses.sort_by(&:date).last(@num_days)
     erb :'expenses/index', :layout => :layout_loggedin
   end
@@ -20,29 +15,17 @@ class ExpenseController < ApplicationController
   get '/expenses/new' do
     redirect_if_not_logged_in
     Category.create_category_if_empty(current_user)
-    #@categories = current_user.categories_sorted
     erb :'expenses/new', :layout => :layout_loggedin
   end
 
   post '/expenses' do
     redirect_if_not_logged_in
     redirect_if_expense_invalid(params[:expense], '/expenses/new')
-    #if !params[:expense].has_value?("")
-        #if new_entry?(params[:expense])
-          #redirect_if_invalid_date(params[:expense])
-          @expense = Expense.new(params[:expense])
-          if @expense.save
-            #Expense.all << @expense
-            flash[:message] = "Expense added"
-            redirect to "/expenses/#{@expense.id}"
-          end
-        #else
-          #flash[:message] = "Already added"
-        #end
-    #else
-    #  flash[:message] = "Missing Fields"
-    #end
-    #redirect to '/expenses/new'
+    @expense = Expense.new(params[:expense])
+    if @expense.save
+      flash[:message] = "Expense added"
+      redirect to "/expenses/#{@expense.id}"
+    end
   end
 
   get '/expenses/:id/edit' do
@@ -54,20 +37,14 @@ class ExpenseController < ApplicationController
 
   patch '/expenses/:id' do
     redirect_if_not_logged_in
+    redirect_if_expense_invalid(params[:expense], '/expenses')
     @expense = Expense.find_by(:id => params[:id])
     # check if expense being updated is owned by the user
-    redirect_if_expense_invalid(params[:expense], '/expenses')
     redirect_if_not_valid_user_or_record(@expense)
-    #if new_entry?(params[:expense])
-      #redirect_if_invalid_date(params[:expense])
-      @expense.update(params[:expense])
-      @expense.save
-      flash[:message] = "Expense Updated"
-      redirect to "/expenses/#{@expense.id}"
-    #else
-      #flash[:message] = "Entry already entered or invalid."
-      #redirect '/expenses'
-    #end
+    @expense.update(params[:expense])
+    @expense.save
+    flash[:message] = "Expense Updated"
+    redirect to "/expenses/#{@expense.id}"
   end
 
   delete '/expenses/:id' do
@@ -84,7 +61,6 @@ class ExpenseController < ApplicationController
     redirect_if_not_logged_in
     @expense = Expense.find_by(:id=>params[:id])
     redirect_if_not_valid_record(@expense, "Expense")
-    #@categories = current_user.categories_sorted
     erb :'expenses/show', :layout => :layout_loggedin
   end
 
