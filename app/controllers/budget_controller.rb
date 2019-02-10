@@ -41,7 +41,6 @@ class BudgetController < ApplicationController
     @budget = Budget.find_by(:id => params[:id])
     redirect_if_not_valid_user_or_record(@budget)
     @budget.update(:amount => params[:amount], :rollover => params[:rollover])
-    @budget.save
     flash[:message] = "Budget Updated."
     redirect to '/budgets'
   end

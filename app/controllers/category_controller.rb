@@ -97,7 +97,6 @@ class CategoryController < ApplicationController
       expenses.each do |expense|
         expense_row = Expense.find(expense.id)
         expense_row.update(:category_id => default_user_category_id)
-        expense_row.save
       end
     end
 

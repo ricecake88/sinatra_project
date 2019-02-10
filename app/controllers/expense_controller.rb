@@ -49,7 +49,6 @@ class ExpenseController < ApplicationController
     # check if expense being updated is owned by the user
     redirect_if_not_valid_user_or_record(@expense)
     @expense.update(params[:expense])
-    @expense.save
     flash[:message] = "Expense Updated"
     redirect to "/expenses/#{@expense.id}"
   end
