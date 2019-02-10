@@ -26,29 +26,29 @@ class ExpenseController < ApplicationController
 
   post '/expenses' do
     redirect_if_not_logged_in
-    if !params[:expense].has_value?("")
-        if new_entry?(params[:expense])
-          redirect_if_invalid_date(params[:expense])
+    redirect_if_expense_invalid(params[:expense], '/expenses/new')
+    #if !params[:expense].has_value?("")
+        #if new_entry?(params[:expense])
+          #redirect_if_invalid_date(params[:expense])
           @expense = Expense.new(params[:expense])
           if @expense.save
-            Expense.all << @expense
+            #Expense.all << @expense
             flash[:message] = "Expense added"
             redirect to "/expenses/#{@expense.id}"
           end
-        else
-          flash[:message] = "Already added"
-        end
-    else
-      flash[:message] = "Missing Fields"
-    end
-    redirect to '/expenses/new'
+        #else
+          #flash[:message] = "Already added"
+        #end
+    #else
+    #  flash[:message] = "Missing Fields"
+    #end
+    #redirect to '/expenses/new'
   end
 
   get '/expenses/:id/edit' do
     redirect_if_not_logged_in
     @expense = Expense.find_by(:id => params[:id])
     redirect_if_not_valid_user_or_record(@expense)
-    #@categories = current_user.categories_sorted
     erb :'expenses/edit', :layout => :layout_loggedin
   end
 
@@ -56,17 +56,18 @@ class ExpenseController < ApplicationController
     redirect_if_not_logged_in
     @expense = Expense.find_by(:id => params[:id])
     # check if expense being updated is owned by the user
+    redirect_if_expense_invalid(params[:expense], '/expenses')
     redirect_if_not_valid_user_or_record(@expense)
-    if new_entry?(params[:expense])
-      redirect_if_invalid_date(params[:expense])
+    #if new_entry?(params[:expense])
+      #redirect_if_invalid_date(params[:expense])
       @expense.update(params[:expense])
       @expense.save
       flash[:message] = "Expense Updated"
       redirect to "/expenses/#{@expense.id}"
-    else
-      flash[:message] = "Entry already entered or invalid."
-      redirect '/expenses'
-    end
+    #else
+      #flash[:message] = "Entry already entered or invalid."
+      #redirect '/expenses'
+    #end
   end
 
   delete '/expenses/:id' do
@@ -90,14 +91,29 @@ class ExpenseController < ApplicationController
   helpers do
 
     def new_entry?(expense)
-      matched_expense = Expense.find_by(:date => expense['date'], :category_id => expense['category_id'], :amount => expense[:amount], :merchant => expense[:merchant])
+      matched_expense = Expense.find_by(:date => expense['date'],\
+        :category_id => expense['category_id'], :amount => expense[:amount],\
+        :description => expense[:description], :merchant => expense[:merchant])
       matched_expense.nil?
     end
 
-    def redirect_if_invalid_date(expense)
-      if expense["date"] > Time.now.to_s(:db)
+    def invalid_date(expense_date)
+      expense_date > Time.now.to_s(:db)
+    end
+
+    def redirect_if_expense_invalid(expense_fields, path)
+      valid = false
+      if expense_fields.has_value?("")
+        flash[:message] = "Missing Fields"
+      elsif !new_entry?(expense_fields)
+        flash[:message] = "Already Added"
+      elsif invalid_date(expense_fields[:date])
         flash[:message] = "Invalid date"
-        redirect to '/expenses'
+      else
+        valid = true
+      end
+      if !valid
+        redirect to path
       end
     end
 
