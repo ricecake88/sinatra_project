@@ -31,28 +31,30 @@ class CategoryController < ApplicationController
 
   post '/categories/new' do
     redirect_if_not_logged_in
-    if !params[:category_name].empty?
-      if !exists_already?(params[:category_name])
-        name = params[:category_name]
+    redirect_if_category_is_invalid(params[:category_name])
+    #if !params[:category_name].empty?
+      #if !exists_already?(params[:category_name])
+        #name = params[:category_name]
         category = Category.new(:category_name => params[:category_name])
         category.user = current_user
         if category.save
-          current_user.categories << category
-          Category.all << category
+          #current_user.categories << category
+          #Category.all << category
           flash[:message] = "Added category!"
+          redirect to '/categories'
         end
-      else
-        flash[:message] = "Error, category already exists"
-      end
-    else
-      flash[:message] = "Error, category is empty."
-    end
-    redirect to '/categories'
+      #else
+      #  flash[:message] = "Error, category already exists"
+      #end
+    #else
+    #  flash[:message] = "Error, category is empty."
+    #end
+    #redirect to '/categories'
   end
 
   get '/categories/delete' do
     redirect_if_not_logged_in
-    @categories = current_user.categories_sorted
+    #@categories = current_user.categories_sorted
     erb :'/categories/delete', :layout => :layout_loggedin
   end
 
@@ -104,6 +106,20 @@ class CategoryController < ApplicationController
       if Category.find_by(:id => id, :category_name => "Expenses")
         flash[:message] = "You do not have permission to do that."
         redirect '/'
+      end
+    end
+
+    def redirect_if_category_is_invalid(name)
+      valid = false
+      if name.empty?
+        flash[:message] = "Error, category is empty."
+      elsif exists_already?(name)
+        flash[:message] = "Error, category already exists"
+      else
+        valid = true
+      end
+      if !valid
+        redirect to '/categories'
       end
     end
 
