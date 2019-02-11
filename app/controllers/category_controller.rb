@@ -32,6 +32,7 @@ class CategoryController < ApplicationController
   post '/categories/new' do
     redirect_if_not_logged_in
     redirect_if_category_is_invalid(params[:category_name])
+    binding.pry
     #if !params[:category_name].empty?
       #if !exists_already?(params[:category_name])
         #name = params[:category_name]
@@ -65,14 +66,15 @@ class CategoryController < ApplicationController
       @categories.each do |cat|
         redirect_if_expense_category(cat["id"])
         expenses_in_current_category = Expense.where(:category_id => cat["id"])
+        binding.pry
         if !expenses_in_current_category.empty?
           set_category_to_default(expenses_in_current_category)
         end
         category = Category.find_by(:id => cat["id"])
         redirect_if_not_valid_user_or_record(category)
         category.delete
+        flash[:message] = "Category or Categories Deleted."
       end
-      flash[:message] = "Category or Categories Deleted."
     else
       flash[:message] = "No categories selected."
     end
@@ -86,10 +88,10 @@ class CategoryController < ApplicationController
     end
 
     def set_category_to_default(expenses)
-      @categories = current_user.categories
+      binding.pry
       default_user_category_id = 0
 
-      @categories.each do |cat|
+      current_user.categories.each do |cat|
         if cat.category_name == "Expenses"
           default_user_category_id = cat.id
           break
@@ -120,6 +122,16 @@ class CategoryController < ApplicationController
       end
       if !valid
         redirect to '/categories'
+      end
+    end
+
+    def redirect_if_categories_invalid(category_ids)
+      valid = false
+      if !category_ids
+        flash[:message] = "No categories chosen"
+      elsif
+      else
+        valid = true
       end
     end
 
