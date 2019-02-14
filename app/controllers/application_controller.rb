@@ -54,13 +54,10 @@ class ApplicationController < Sinatra::Base
 
   get '/account' do
     redirect_if_not_logged_in
-    @user = current_user
     @budget_hashes = []
-    @categories = current_user.categories_sorted
-    @total_month_expense = current_user.total_current_month
     @expenses_current_month = current_user.specific_month_expenses(Helpers.current_year, Helpers.current_month)
-    @categories.each do |cat|
-      budget_hash = @user.surplus_for_category(cat.id)
+    current_user.categories.each do |cat|
+      budget_hash = current_user.surplus_for_category(cat.id)
       @budget_hashes << budget_hash
     end
     erb :account, :layout => :layout_loggedin
@@ -96,16 +93,6 @@ class ApplicationController < Sinatra::Base
       end
     end
 
-  #  def redirect_if_not_valid_record(record, type)
-#      if record.nil?
-#        flash[:message] = "#{type} not found."
-#        redirect "/#{type.downcase}s"
-#      end
-#    end
-
-    # record must be of one of the types, otherwise it is implied that it does
-    # not exist and will return false. If it does exist, it validates the
-    # user is authorized to make a change to the record
     def redirect_if_not_valid_user_or_record(record)
       valid = false
       if ((record.class == Budget || record.class == Expense) && record.category.user == current_user) ||
