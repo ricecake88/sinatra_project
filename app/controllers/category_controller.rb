@@ -2,36 +2,29 @@
 class CategoryController < ApplicationController
 
   get '/categories' do
-    #@categories = []
     redirect_if_not_logged_in
     Category.create_category_if_empty(current_user)
-   #@categories = current_user.categories_sorted
     erb :'categories/index', :layout => :layout_loggedin
   end
 
   patch '/categories/edit' do
     redirect_if_not_logged_in
-    if !params[:category].nil?
-      @categories = params[:category]
-      @categories.each do |cat|
-        redirect_if_expense_category(cat["id"])
-        category = Category.find_by(:id => cat["id"])
-        redirect_if_not_valid_user_or_record(category)
-        if cat["name"] != category.category_name
-          category.update(:category_name => cat["name"])
-          category.save
-          flash[:message] = "Modified category"
-        end
+    redirect_if_no_categories(params[:category])
+    params[:category].each do |cat|
+      category = Category.find_by(:id => cat["id"])
+      redirect_if_not_valid_user_or_record(category)
+      redirect_if_category_is_invalid(category.category_name, "patch")
+      if cat["name"] != category.category_name
+        category.update(:category_name => cat["name"])
+        flash[:message] = "Modified category"
       end
-    else
-      flash[:message] = "No category modified, missing category data."
     end
     redirect to '/categories'
   end
 
   post '/categories/new' do
     redirect_if_not_logged_in
-    redirect_if_category_is_invalid(params[:category_name])
+    redirect_if_category_is_invalid(params[:category_name], "post")
     category = Category.new(:category_name => params[:category_name])
     category.user = current_user
     if category.save
@@ -42,7 +35,6 @@ class CategoryController < ApplicationController
 
   get '/categories/delete' do
     redirect_if_not_logged_in
-    #@categories = current_user.categories_sorted
     erb :'/categories/delete', :layout => :layout_loggedin
   end
 
@@ -52,7 +44,7 @@ class CategoryController < ApplicationController
     params[:category].each do |cat|
       category = Category.find_by(:id => cat["id"])
       redirect_if_not_valid_user_or_record(category)
-      redirect_if_category_is_invalid(category.category_name)
+      redirect_if_category_is_invalid(category.category_name, "delete")
       set_category_to_default(category)
       category.delete
       flash[:message] = "Category or Categories Deleted."
@@ -84,14 +76,7 @@ class CategoryController < ApplicationController
       end
     end
 
-    def redirect_if_expense_category(id)
-      if Category.find_by(:id => id, :category_name => "Expenses")
-        flash[:message] = "You do not have permission to do that."
-        redirect '/'
-      end
-    end
-
-    def redirect_if_category_is_invalid(name)
+    def redirect_if_category_is_invalid(name, action)
       valid = false
       path = '/categories'
       if name == "Expenses"
@@ -99,7 +84,7 @@ class CategoryController < ApplicationController
         path = '/'
       elsif name.empty?
         flash[:message] = "Error, category is empty."
-      elsif exists_already?(name)
+      elsif exists_already?(name) && action == "post"
         flash[:message] = "Error, category already exists"
       else
         valid = true
