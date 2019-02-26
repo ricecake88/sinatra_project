@@ -25,8 +25,7 @@ class CategoryController < ApplicationController
   post '/categories/new' do
     redirect_if_not_logged_in
     redirect_if_category_is_invalid(params[:category_name], "post")
-    category = Category.new(:category_name => params[:category_name])
-    category.user = current_user
+    category = current_user.categories.build(params)
     if category.save
       flash[:message] = "Added category!"
       redirect to '/categories'
