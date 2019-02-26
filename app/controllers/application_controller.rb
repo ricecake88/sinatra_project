@@ -32,8 +32,9 @@ class ApplicationController < Sinatra::Base
     else
       @user = User.new(username: params[:username], password: params[:password])
       if @user.save
-        flash[:message] = "Account created. Please sign in!"
-        redirect '/'
+        session[:user_id] = @user.id
+        flash[:message] = "Account created!"
+        redirect '/account'
       else
         flash[:message] = "Unknown error. Please try again."
       end
